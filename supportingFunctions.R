@@ -33,3 +33,10 @@ for (file in filelist){
 		# blah blah blah
 	}
 }
+
+# Something like this? Carol
+
+for (i in 1:length(files.to.read)) {
+  y_files <- (read.table(files.to.read[i], header = TRUE, fill = TRUE))
+  write.csv(y_files, file = files.to.write[i])
+}
