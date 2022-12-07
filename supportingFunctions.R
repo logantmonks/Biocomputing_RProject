@@ -1,4 +1,5 @@
 #First Function
+Converting_txt_to_csv <- function(){
 setwd("~/Desktop/Biocomputing_RProject-main/Rproject2022/countryY/")
 dir.create("~/Desktop/Biocomputing_RProject-main/Rproject2022/new_countryY")
 filelist = list.files(pattern = ".txt")
@@ -10,6 +11,7 @@ for (i in 1:length(filelist)){
   setwd("~/Desktop/Biocomputing_RProject-main/Rproject2022/new_countryY/")
   write.csv(data, file=output, sep="," , col.names = TRUE, row.names=FALSE)
   setwd("~/Desktop/Biocomputing_RProject-main/Rproject2022/countryY/")
+}
 }
 
 # Gretchen notes:
