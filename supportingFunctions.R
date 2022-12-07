@@ -1,8 +1,8 @@
 #First Function
 setwd("~/Desktop/Biocomputing_RProject-main/Rproject2022/countryY/")
+dir.create("~/Desktop/Biocomputing_RProject-main/Rproject2022/new_countryY")
 filelist = list.files(pattern = ".txt")
 for (i in 1:length(filelist)){
-
   input <- filelist[i]
   output <- paste0(gsub("\\.txt$", "", input), ".csv")
   print(paste("Processing the file: ", input))
