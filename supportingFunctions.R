@@ -7,7 +7,7 @@
 #Write a function to summarize the compiled data set in terms of
   #number of screens run
   #percent of patients screened that were infected
-  #percent of female patients infected and percent of male patients infected with graphs to see if one gender is more susceptible
+  #percent of female patients infected and percent of male patients infected
   #the age distribution graphs of all patients screened and of all patients infected
   #graph of percentage of infected patients for 10 year age group ranges to see if one age group range is more susceptible
 
