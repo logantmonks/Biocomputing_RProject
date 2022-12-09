@@ -63,6 +63,11 @@ ggplot(infected, aes(x = dayofYear)) +
   ylab("Number of reported infections") +
   theme_classic()
 
+## As can be seen on the histograms, cases were detected in Country X as early as
+## day 120 whereas no cases were reported in Country Y until day 139. Thus, it is highly
+## likely that the disease originated in Country X given that cases were reported
+## there almost 3 weeks before they were in Country Y.
+
 #Question 2: If Country Y develops a vaccine for the disease, is it likely to work for citizens of Country X
 #To answer this question, we are going to analyze whether there is a difference in which markers infect patients in each country
 #if there is a difference in which markers are infecting patients of each country, then the vaccines will likely not work for both countries
