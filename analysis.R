@@ -33,19 +33,21 @@ csv_summarize("allData.csv")
 
 # to get a better understanding of the infection and to have more data to answer
 # the two questions, we want to get the count of infected in each country and
-# which markers are most present in both
+# which markers are most present in both, and a timeline of the infections
 country_infected_count(".")
 country_markers("countryX")
 country_markers("countryY")
+infection_timeline("countryX")
+infection_timeline("countryY")
 
 # Answer to question 1
 # We would say that the outbreak likely began in X because it has a greater total
 # number of infections than country Y by more than double. We believe this shows
 # that the outbreak had more time to spread in countryX than in countryY. Also,
-# by looking through the data at the early screenings, we can see that we find 
-# infections much earlier for countryX than for countryY. Moreover, since the screenings
-# for each country are around the same time range, and countryX has some early on
-# while countryY does not, we believe it started in countryX.
+# we have a function that shows a timeline of the infections, and we can see
+# that for the first several screenings that countryY has no infections while
+# countryX does. All of this information infers that the outbreak started
+# in countryX
 
 
 # Answer to question 2

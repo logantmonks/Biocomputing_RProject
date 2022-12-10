@@ -367,5 +367,53 @@ create_output_file <- function(dir){
   write.table(output, "output.txt", append = TRUE, col.names = FALSE, row.names = FALSE)
 }
 
+# this function will show a timeline of infections in a country
+infection_timeline <- function(country){
+  # get all the files we are looping through
+  files<-list.files(country, pattern ="*.csv", full.names = TRUE, recursive = FALSE)
+  
+  # get the number of csv files there are, to show how many screening days
+  num_days<-length(files)
+
+  # create a vector to store infection count
+  infection_vector<-vector(mode="integer", length = num_days)
+  
+  # create a vector to label graph
+  day_vector<-vector(mode="integer", length = num_days)
+  
+  # create a variable for index
+  index<-1
+
+  for (file in files){
+    # create a variable to get infected count
+    infected_count<-0
+    
+    # just get the day
+    day<-gsub(".csv", "", file)
+    day<-gsub("country[a-zA-Z]*/screen_", "", day)
+    
+    day_vector[index]<-day
+    
+    # read in country data
+    my_data<-read.csv(file=file, header=TRUE, sep=',')
+    
+    # loop through and find infected count
+    for (row in 1:nrow(my_data)){
+      if (my_data$marker01[row] == 1 || my_data$marker02[row] == 1 || my_data$marker03[row] == 1 || my_data$marker04[row] == 1 || my_data$marker05[row] == 1 || my_data$marker06[row] == 1 || my_data$marker07[row] == 1 || my_data$marker08[row] == 1 || my_data$marker09[row] == 1 || my_data$marker10[row] == 1){
+        infected_count<-infected_count + 1
+      }
+    }
+    infection_vector[index]<-infected_count
+    index<-index + 1
+  }
+
+  
+  country_name<-gsub("country", "", country)
+  graph_title<-paste("Infection Timeline for ", country_name, sep="")
+  # make the graph
+  barplot(infection_vector, main = graph_title, xlab = "day of year", ylab = "infection count", col = "blue", names.arg = day_vector)
+
+}
+
 
 
