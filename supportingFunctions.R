@@ -287,10 +287,20 @@ country_markers <- function(country){
   cat("Info for ", country, "\n")
   cat("marker01\tmarker02\tmarker03\tmarker04\tmarker05\tmarker06\tmarker07\tmarker08\tmarker09\tmarker10\t\n")
   cat(marker01_count, "\t\t",marker02_count, "\t\t",marker03_count, "\t\t",marker04_count, "\t\t",marker05_count, "\t\t",marker06_count, "\t\t",marker07_count, "\t\t",marker08_count, "\t\t",marker09_count, "\t\t",marker10_count, "\n")
+  
+  # make a graph with the data
+  marker_data<-c(marker01_count, marker02_count, marker03_count, marker04_count, marker05_count, marker06_count, marker07_count, marker08_count, marker09_count, marker10_count)
+  # making the title for graph
+  graph_title<-paste("Marker count for ", country, sep="")
+  barplot(marker_data, main = graph_title, ylab = "infection count", col = "blue", names.arg = c("marker01", "marker02","marker03","marker04","marker05","marker06","marker07","marker08","marker09","marker10"))
 }
 
 library(ggplot2)
 
+#csv_join("countryX", 2)
+#csv_join("countryY", 2)
+#combine_big_csv(".")
+#csv_summarize("allData_test.csv")
 #country_infected_count("countryX")
 #country_infected_count("countryY")
 country_markers("countryX")
