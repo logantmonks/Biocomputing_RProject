@@ -1,3 +1,9 @@
+# Introduction to Biocomputing R Project
+# Group Members: Brandon Barnacle, Austin Chang, Patrick Bahk
+
+
+library(ggplot2)
+
 # this function takes in a directory, and compiles all csv files into a single
 # file
 csv_join <- function(dir, naflag){
@@ -125,7 +131,7 @@ combine_big_csv <- function(dir){
   }
   
   # write the file
-  write.table(allData, file = "allData_test.csv", sep=",", row.names=FALSE, col.names=FALSE)
+  write.table(allData, append = FALSE, file = "allData.csv", sep=",", row.names=FALSE, col.names=FALSE)
   
 }
 
@@ -199,33 +205,74 @@ csv_summarize <- function(filepath){
   print(infect_males)
   print(ratio_males)
   
+  # create output info 
+  output<-c(total_num_screens, infect_percent, infect_females, ratio_females, infect_males, ratio_males)
+  write.table(output, "output.txt", append = TRUE, col.names = FALSE, row.names = FALSE)
+  
   # cut off the x age values at 125, as there are a few outliers that make the graph difficult to read
   ggplot(my_data, aes(x=age)) + 
-    geom_histogram(binwidth=1) 
-    #geom_histogram(binwidth=1) + 
-    #xlim(0, 125)
+    geom_histogram(binwidth=1)  +
+    ggtitle("Spread of Infection Count Across Ages")
   
 }
 
-# this function will get the total infected count for a country, you provide the
-# country name, and it reads the combinedData for the country
-country_infected_count <- function(country){
-  # create the file name
-  filename<-paste("combinedData_", country, ".csv", sep="")
+# this function will get the total infected count for every country, it takes in
+# a directory and looks for all the combined files
+country_infected_count <- function(dir){
+  # get all the files we are looping through
+  files<-list.files(dir, pattern ="combinedData_.*.csv", full.names = TRUE, recursive = FALSE)
   
-  # read in country data
-  my_data<-read.csv(file=filename, header=TRUE, sep=',')
+  # get the number of countries
+  num_countries<-length(files)
   
-  # create a variable to get infected count
-  infected_count<-0
+  # create two vectors, one has the country names, the other has the infected
+  # count, keep the indexes for a country the same in each
+  country_vector<-vector("character", length = num_countries)
+  infected_vector<-vector("integer", length = num_countries)
   
-  # loop through and find infected count
-  for (row in 1:nrow(my_data)){
-    if (my_data$marker01[row] == 1 || my_data$marker02[row] == 1 || my_data$marker03[row] == 1 || my_data$marker04[row] == 1 || my_data$marker05[row] == 1 || my_data$marker06[row] == 1 || my_data$marker07[row] == 1 || my_data$marker08[row] == 1 || my_data$marker09[row] == 1 || my_data$marker10[row] == 1){
-      infected_count<-infected_count + 1  
+  # create a variable to keep track of the index
+  index<-1
+  
+  # loop through each country
+  for(file in files){
+    # read in country data
+    my_data<-read.csv(file=file, header=TRUE, sep=',')
+    
+    # just get the country name
+    country_name<-gsub(".csv", "", file)
+    country_name<-gsub("./combinedData_country", "", country_name)
+    
+    # put country name in vector
+    country_vector[index] = country_name
+    
+    # create a variable to get infected count
+    infected_count<-0
+    
+    # loop through and find infected count
+    for (row in 1:nrow(my_data)){
+      if (my_data$marker01[row] == 1 || my_data$marker02[row] == 1 || my_data$marker03[row] == 1 || my_data$marker04[row] == 1 || my_data$marker05[row] == 1 || my_data$marker06[row] == 1 || my_data$marker07[row] == 1 || my_data$marker08[row] == 1 || my_data$marker09[row] == 1 || my_data$marker10[row] == 1){
+        infected_count<-infected_count + 1  
+      }
     }
+    
+    # put in the infected count
+    infected_vector[index] = infected_count
+    
+    # increase index
+    index<-index+1
   }
-  print(infected_count)
+  
+  # create a graph to show infected count
+  barplot(infected_vector, main = "Number of Infected Individuals", xlab = "country name", ylab = "infection count", col = "blue", names.arg = country_vector)
+  
+  # create output info for infected count
+  line1<-"Infected count for each country"
+  output<-c(line1, country_vector, infected_vector)
+  write.table(output, "output.txt", append = TRUE, col.names = FALSE, row.names = FALSE)
+  
+  cat(line1, "\n")
+  print(country_vector)
+  print(infected_vector)
 }
 
 # This function takes a country name and provides the count for which markers
@@ -283,28 +330,42 @@ country_markers <- function(country){
     }
   }
   
+  # create the output strings
+  line1<-paste("Info for ", country)
+  line2<-paste("marker01\tmarker02\tmarker03\tmarker04\tmarker05\tmarker06\tmarker07\tmarker08\tmarker09\tmarker10\t")
+  line3<-paste(marker01_count, "\t\t",marker02_count, "\t\t",marker03_count, "\t\t",marker04_count, "\t\t",marker05_count, "\t\t",marker06_count, "\t\t",marker07_count, "\t\t",marker08_count, "\t\t",marker09_count, "\t\t",marker10_count)
+  # put them in a vector
+  output<-c(line1, line2, line3)
+  write.table(output, "output.txt", append = TRUE, col.names = FALSE, row.names = FALSE)
+  
   # print out info
-  cat("Info for ", country, "\n")
-  cat("marker01\tmarker02\tmarker03\tmarker04\tmarker05\tmarker06\tmarker07\tmarker08\tmarker09\tmarker10\t\n")
-  cat(marker01_count, "\t\t",marker02_count, "\t\t",marker03_count, "\t\t",marker04_count, "\t\t",marker05_count, "\t\t",marker06_count, "\t\t",marker07_count, "\t\t",marker08_count, "\t\t",marker09_count, "\t\t",marker10_count, "\n")
+  cat(line1, "\n")
+  cat(line2, "\n")
+  cat(line3, "\n")
   
   # make a graph with the data
   marker_data<-c(marker01_count, marker02_count, marker03_count, marker04_count, marker05_count, marker06_count, marker07_count, marker08_count, marker09_count, marker10_count)
   # making the title for graph
-  graph_title<-paste("Marker count for ", country, sep="")
-  barplot(marker_data, main = graph_title, ylab = "infection count", col = "blue", names.arg = c("marker01", "marker02","marker03","marker04","marker05","marker06","marker07","marker08","marker09","marker10"))
+  country_name<-gsub("country", "", country)
+  graph_title<-paste("Marker count for ", country_name, sep="")
+  # make the graph
+  barplot(marker_data, main = graph_title, xlab = "marker", ylab = "infection count", col = "blue", names.arg = c("marker01", "marker02","marker03","marker04","marker05","marker06","marker07","marker08","marker09","marker10"))
 }
 
-library(ggplot2)
-
-#csv_join("countryX", 2)
-#csv_join("countryY", 2)
-#combine_big_csv(".")
-#csv_summarize("allData_test.csv")
-#country_infected_count("countryX")
-#country_infected_count("countryY")
-country_markers("countryX")
-country_markers("countryY")
+# this is a function to create an output file that will keep all the output run by the functions
+# this will overwrite any file called output.txt in the dir
+create_output_file <- function(dir){
+  # add the dir to output file
+  filename<-paste(dir, "/output.txt")
+  # create the file
+  file.create("output.txt")
+  
+  # create header text
+  line1<-"Output File For Disease Outbreak Information"
+  line2<-""
+  output<-c(line1, line2)
+  write.table(output, "output.txt", append = TRUE, col.names = FALSE, row.names = FALSE)
+}
 
 
 
