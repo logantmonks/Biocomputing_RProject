@@ -35,9 +35,71 @@ for (file in filelist){
 	}
 }
 
-# Something like this? Carol
 
-for (i in 1:length(files.to.read)) {
-  y_files <- (read.table(files.to.read[i], header = TRUE, fill = TRUE))
-  write.csv(y_files, file = files.to.write[i])
+#Third Function
+Compiling_data <- function(){
+  #Country Y 
+  setwd("~/Desktop/Biocomputing_RProject-main/Rproject2022/new_countryY/")
+  files_Y <- list.files(path="~/Desktop/Biocomputing_RProject-main/Rproject2022/new_countryY/", pattern="*.csv")
+  for(i in 1:length(files_Y)){
+   compiled_data_countryY <- read.csv(files_Y[i], header= TRUE)
+  }
+  Number_Screens_CountryY = nrow(compiled_data_countryY)
+  Number_Infected_CountryY = 0
+  Number_Female_CountryY = 0
+  Number_Male_CountryY = 0
+  for(i in 1:nrow(compiled_data_countryY)){
+    #Counts for infected individuals
+    if(compiled_data_countryY[i, 3]==1 || compiled_data_countryY[i, 4]==1 || compiled_data_countryY[i, 5]==1 
+       || compiled_data_countryY[i, 6]==1 || compiled_data_countryY[i, 7]==1 || compiled_data_countryY[i, 8]==1 ||
+         compiled_data_countryY[i, 9]==1 || compiled_data_countryY[i, 10]==1 || compiled_data_countryY[i, 11]==1 
+       || compiled_data_countryY[i, 12]==1 ){
+      Number_Infected_CountryY = Number_Infected_CountryY + 1
+      
+    }
+    
+    #Counts females vs males 
+    if(compiled_data_countryY[i,1]=="female"){
+      Number_Female_CountryY = Number_Female_CountryY + 1
+    } else{
+      Number_Male_CountryY = Number_Male_CountryY + 1
+    }
+    
+  }
+  
+  # Percentage of infected individuals in country Y
+  Percentage_Infected_CountryY = Number_Infected_CountryY / Number_Screens_CountryY * 100
+  
+  
+  #Country X 
+  setwd("~/Desktop/Biocomputing_RProject-main/Rproject2022/countryX/")
+  files_X <- list.files(path="~/Desktop/Biocomputing_RProject-main/Rproject2022/countryX/", pattern="*.csv")
+  for(i in 1:length(files_X)){
+    compiled_data_countryX <- read.csv(files_X[i], header= TRUE)
+  }
+  Number_Screens_CountryX = nrow(compiled_data_countryX)
+  Number_Infected_CountryX = 0
+  Number_Female_CountryX = 0
+  Number_Male_CountryX = 0
+  for(i in 1:nrow(compiled_data_countryX)){
+    #Counts for infected individuals
+    if(compiled_data_countryX[i, 3]==1 || compiled_data_countryX[i, 4]==1 || compiled_data_countryX[i, 5]==1 
+       || compiled_data_countryX[i, 6]==1 || compiled_data_countryX[i, 7]==1 || compiled_data_countryX[i, 8]==1 ||
+       compiled_data_countryX[i, 9]==1 || compiled_data_countryX[i, 10]==1 || compiled_data_countryX[i, 11]==1 
+       || compiled_data_countryX[i, 12]==1 ){
+      Number_Infected_CountryX = Number_Infected_CountryX + 1
+      
+    }
+    
+    #Counts females vs males 
+    if(compiled_data_countryX[i,1]=="female"){
+      Number_Female_CountryX = Number_Female_CountryX + 1
+    } else{
+      Number_Male_CountryX = Number_Male_CountryX + 1
+    }
+    
+  }
+  # Percentage of infected individuals in country X
+  Percentage_Infected_CountryX = Number_Infected_CountryX / Number_Screens_CountryX * 100
 }
+
