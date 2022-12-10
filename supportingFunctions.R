@@ -157,7 +157,7 @@ csv_summarize <- function(filepath){
   # has a 1
   infected_count = 0
   for (row in 1:nrow(my_data)){
-    if (my_data$marker01[row] == 1 || my_data$marker02[row] == 1 || my_data$marker03[row] == 1 || my_data$marker04[row] == 1 || my_data$marker05[row] == 1 || my_data$marker06[row] == 1 || my_data$marker07[row] == 1 || my_data$marker08[row] == 1){
+    if (my_data$marker01[row] == 1 || my_data$marker02[row] == 1 || my_data$marker03[row] == 1 || my_data$marker04[row] == 1 || my_data$marker05[row] == 1 || my_data$marker06[row] == 1 || my_data$marker07[row] == 1 || my_data$marker08[row] == 1 || my_data$marker09[row] == 1 || my_data$marker10[row] == 1){
       infected_count = infected_count + 1
     }
   }
@@ -173,16 +173,17 @@ csv_summarize <- function(filepath){
   num_females = 0
   num_infected_males = 0
   num_infected_females = 0
+
   for (row in 1:nrow(my_data)){
     if (my_data$gender[row] == 'female'){
       num_females = num_females + 1
-      if (my_data$marker01[row] == 1 || my_data$marker02[row] == 1 || my_data$marker03[row] == 1 || my_data$marker04[row] == 1 || my_data$marker05[row] == 1 || my_data$marker06[row] == 1 || my_data$marker07[row] == 1 || my_data$marker08[row] == 1){
+      if (my_data$marker01[row] == 1 || my_data$marker02[row] == 1 || my_data$marker03[row] == 1 || my_data$marker04[row] == 1 || my_data$marker05[row] == 1 || my_data$marker06[row] == 1 || my_data$marker07[row] == 1 || my_data$marker08[row] == 1 || my_data$marker09[row] == 1 || my_data$marker10[row] == 1){
         num_infected_females = num_infected_females + 1  
       }  
     }
     else if (my_data$gender[row] == 'male'){
       num_males = num_males + 1
-      if (my_data$marker01[row] == 1 || my_data$marker02[row] == 1 || my_data$marker03[row] == 1 || my_data$marker04[row] == 1 || my_data$marker05[row] == 1 || my_data$marker06[row] == 1 || my_data$marker07[row] == 1 || my_data$marker08[row] == 1){
+      if (my_data$marker01[row] == 1 || my_data$marker02[row] == 1 || my_data$marker03[row] == 1 || my_data$marker04[row] == 1 || my_data$marker05[row] == 1 || my_data$marker06[row] == 1 || my_data$marker07[row] == 1 || my_data$marker08[row] == 1 || my_data$marker09[row] == 1 || my_data$marker10[row] == 1){
         num_infected_males = num_infected_males + 1  
       }
     }
@@ -206,7 +207,94 @@ csv_summarize <- function(filepath){
   
 }
 
+# this function will get the total infected count for a country, you provide the
+# country name, and it reads the combinedData for the country
+country_infected_count <- function(country){
+  # create the file name
+  filename<-paste("combinedData_", country, ".csv", sep="")
+  
+  # read in country data
+  my_data<-read.csv(file=filename, header=TRUE, sep=',')
+  
+  # create a variable to get infected count
+  infected_count<-0
+  
+  # loop through and find infected count
+  for (row in 1:nrow(my_data)){
+    if (my_data$marker01[row] == 1 || my_data$marker02[row] == 1 || my_data$marker03[row] == 1 || my_data$marker04[row] == 1 || my_data$marker05[row] == 1 || my_data$marker06[row] == 1 || my_data$marker07[row] == 1 || my_data$marker08[row] == 1 || my_data$marker09[row] == 1 || my_data$marker10[row] == 1){
+      infected_count<-infected_count + 1  
+    }
+  }
+  print(infected_count)
+}
+
+# This function takes a country name and provides the count for which markers
+# a person had
+country_markers <- function(country){
+  # create the file name
+  filename<-paste("combinedData_", country, ".csv", sep="")
+  
+  # read in country data
+  my_data<-read.csv(file=filename, header=TRUE, sep=',')
+  
+  # create a count for each marker
+  marker01_count<-0
+  marker02_count<-0
+  marker03_count<-0
+  marker04_count<-0
+  marker05_count<-0
+  marker06_count<-0
+  marker07_count<-0
+  marker08_count<-0
+  marker09_count<-0
+  marker10_count<-0
+  
+  # loop through and count each marker
+  for (row in 1:nrow(my_data)){
+    if (my_data$marker01[row] == 1){
+      marker01_count<-marker01_count + 1 
+    }
+    if (my_data$marker02[row] == 1){
+      marker02_count<-marker02_count + 1 
+    }
+    if (my_data$marker03[row] == 1){
+      marker03_count<-marker03_count + 1 
+    }
+    if (my_data$marker04[row] == 1){
+      marker04_count<-marker04_count + 1 
+    }
+    if (my_data$marker05[row] == 1){
+      marker05_count<-marker05_count + 1 
+    }
+    if (my_data$marker06[row] == 1){
+      marker06_count<-marker06_count + 1 
+    }
+    if (my_data$marker07[row] == 1){
+      marker07_count<-marker07_count + 1 
+    }
+    if (my_data$marker08[row] == 1){
+      marker08_count<-marker08_count + 1 
+    }
+    if (my_data$marker09[row] == 1){
+      marker09_count<-marker09_count + 1 
+    }
+    if (my_data$marker10[row] == 1){
+      marker10_count<-marker10_count + 1 
+    }
+  }
+  
+  # print out info
+  cat("Info for ", country, "\n")
+  cat("marker01\tmarker02\tmarker03\tmarker04\tmarker05\tmarker06\tmarker07\tmarker08\tmarker09\tmarker10\t\n")
+  cat(marker01_count, "\t\t",marker02_count, "\t\t",marker03_count, "\t\t",marker04_count, "\t\t",marker05_count, "\t\t",marker06_count, "\t\t",marker07_count, "\t\t",marker08_count, "\t\t",marker09_count, "\t\t",marker10_count, "\n")
+}
+
 library(ggplot2)
+
+#country_infected_count("countryX")
+#country_infected_count("countryY")
+country_markers("countryX")
+country_markers("countryY")
 
 
 
