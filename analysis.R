@@ -6,6 +6,8 @@
 # maybe let's type another brief paragraph describing our file structure like last time?
 setwd("~/Desktop/IntroBiocomputing/R/Biocomputing_RProject/Rproject2022")
 
+# load necessary libraries
+library(ggplot2)
 
 ## Data prep
 
@@ -54,14 +56,17 @@ for(i in 1:nrow(young)){ #for each row in the data set, sum the values of all of
 
 # create a dataframe with only infected individuals
 infected <- young[young$infected == "1",]
+# and with only country, dayofYear, and infected
+no_markers <- infected[,13:15]
 
-# plot infection over time in each country
-ggplot(infected, aes(x = dayofYear)) +
+# no markers, only infection
+ggplot(no_markers, aes(x = dayofYear)) +
   geom_histogram(binwidth = 1) +
   facet_wrap(~country) +
   xlab("Day of year") +
   ylab("Number of reported infections") +
   theme_classic()
+
 
 ## As can be seen on the histograms, cases were detected in Country X as early as
 ## day 120 whereas no cases were reported in Country Y until day 139. Thus, it is highly
@@ -114,4 +119,46 @@ ggplot(marker_infected_data, aes(x=marker_names, y=y_data))+
 #The distributions of which markers infect patients from country X and country Y are very different
 #country X patients are infected by mostly markers 01-05 while country Y patients are infected mainly by markers 06-10
 #it is unlikely that a vaccine developed in country Y will work for patients in country X because the vaccine will be targed at different markers
->>>>>>> e0b335c657b148ced03bd3adef32edf0099d91c3
+
+
+#Bonus: disease evolution
+#Given the short generation time of the disease-causing bacteria, it is suspected that 
+#the bacteria is evolving along its transmission path.
+#we hypothesize that a change in markers present over time indicates bacterial evolution
+
+# plot markers present over time
+# convert data to long format
+long <- gather(young, key = "marker", value = "status", 3:12)
+
+# data with only marker status, marker name, dayofYear
+long_markers <- long[,c(4, 6:7)]
+# data with only infected markers
+long_markers_infected <- long_markers[long_markers$status == 1,]
+
+# plot infection over time, faceted by marker to see number of positive tests per marker over time
+ggplot(long_markers_infected, aes(x = dayofYear)) +
+  geom_histogram() +
+  facet_wrap(~marker) +
+  theme_classic() +
+  xlab("Day of year") +
+  ylab("Number of positive tests")
+# plot, color by marker (harder to interpret)
+ggplot(long_markers_infected, aes(x = dayofYear, fill = marker)) +
+  geom_histogram() +
+  theme_classic() +
+  xlab("Day of year") +
+  ylab("Number of positive tests")
+
+##As both graphs show (the first, faceted graph more clearly than the colored graph),
+##markers 1-5 are consistently present from the onset of the outbreak, and they all
+##increase in prevalence over the course the screening trials. Markers 6-10, however,
+##do not begin to consistently appear until day 150 (markers 6 and 7) or 160 (markers 8-10),
+##indicating that different strains of the infectious bacteria began to evolve at that
+##time. These days also coincide with the outbreak of the disease in Country Y, suggesting
+##that evolution of the infectious bacteria may have permitted it to spread to a new population 
+# with different immune function. Indeed, individuals from Country Y were much more likely
+##to have markers 6-10 present than were individuals from Country X, who mostly displayed
+##markers 1-5. We thus conclude that the spread of the disease from Country X to Country Y
+##was likely made possible by a mutation in the bacteria that allowed it to infect individuals
+##with an immune profile characteristic of individuals of Country Y.
+
