@@ -56,13 +56,13 @@ for(i in 1:nrow(young)){ #for each row in the data set, sum the values of all of
 
 # create a dataframe with only infected individuals
 infected <- young[young$infected == "1",]
-# and with only country, dayofYear, and infected
+# and with only country, dayofYear, and infected columns
 no_markers <- infected[,13:15]
 
-# no markers, only infection
-ggplot(no_markers, aes(x = dayofYear)) +
-  geom_histogram(binwidth = 1) +
-  facet_wrap(~country) +
+# plot number of infections over time
+ggplot(no_markers, aes(x = dayofYear)) + # x is dayofYear, so y will be the count of infected individuals because it is a histogram
+  geom_histogram(binwidth = 1) + # set binwidth as 1 so there is a bar for each day
+  facet_wrap(~country) + # facet by country to compare temporal disease trends between Country X and Country Y
   xlab("Day of year") +
   ylab("Number of reported infections") +
   theme_classic()
@@ -74,11 +74,10 @@ ggplot(no_markers, aes(x = dayofYear)) +
 ## there almost 3 weeks before they were in Country Y.
 
 #Question 2: If Country Y develops a vaccine for the disease, is it likely to work for citizens of Country X
-#To answer this question, we are going to analyze whether there is a difference in which markers infect patients in each country
-#if there is a difference in which markers are infecting patients of each country, then the vaccines will likely not work for both countries
+#To answer this question, we are going to analyze whether there is a difference in which markers infected patients display in each country
+#If there is a difference in which markers are present in infected patients between countries, then a single vaccine will unlikely be effective in both countries.
 
-#load data
-allData <- read.csv ("/users/sydneyharris/desktop/allData.csv", header = T)
+
 #create a data frame that is only data for each marker in each country
 country_x <-allData[allData$country == "X",3:12]
 country_y <- allData[allData$country == "Y",3:12]
@@ -100,7 +99,6 @@ for (i in 1:10){
 #create new data frame that holds the marker and the number of patients infected by that marker in country X and in country Y
 marker_infected_data <- data.frame(marker_names, x_data, y_data)
 #graph data
-library (ggplot2)
 #graph of the number of patients infected by each marker in country X
 ggplot(marker_infected_data, aes(x=marker_names, y=x_data))+
   geom_col()+
