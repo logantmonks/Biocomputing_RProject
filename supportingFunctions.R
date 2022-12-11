@@ -3,14 +3,67 @@
 ## 14 December 2022
 
 
+# function to compile data from all csv files in a directory into a single csv file
+# compile_csv(dir, type, place, start = 8, stop = 10, na_rm): 
+# "dir" = path to directory of interest
+# "type" = file type to include in compilation ("csv", "txt", etc)
+# "place" = place to include in added "country" column ("X" or "Y")
+# "start" = start point to extract information from file name to include as a new column (day of year of screening)
+# "stop" = end point to "start"; the defaults (start = 8, stop = 10) extract the day of screening from each file name
+# "na_rm" = manage NA values within resulting dataframe
+#           na_rm = "remove": rows with NA values are removed
+#           na_rm = "warn": if NA values are present, a warning message appears
+#           na_rm = "include": NA values are included without a warning
+compileFiles <- function(dir, type, place, start = 8, stop = 10, na_rm){
+  # create a list of files from the directory of interest
+  file_list <- list.files(dir, type)
+  # read in first file in file_list; this will be the dataframe to which all
+  # subsequent csv's will be appended
+  all <- read.csv(file_list[1], header = TRUE)
+  # add country column
+  all$country = place
+  # add dayofYear column (day of year of screening)
+  all$dayofYear = substr(file_list[1], start = start, stop = stop)
+  # loop through the rest of file_list, appending each csv to the bottom of "all"
+  for(file in 2:length(file_list)){
+    # read in next csv file in file_list
+    screen <- read.csv(file_list[file], header = TRUE)
+    # add country column
+    screen$country <- place
+    # add dayofYear column (day of year of screening)
+    screen$dayofYear <- substr(file_list[file], start = start, stop = stop)
+    # append ith csv file to all csv dataframe
+    all <- rbind(all, screen)
+    # remove the unnecessary objects to save memory
+    rm(screen)
+  }
+  # include optional NA warning/removal
+  # if na_rm = "remove", rows with NA values are deleted from dataframe and the message
+  # "NA values removed" is printer
+  if(na_rm == "remove"){
+    all <- na.omit(all)
+    print("NA values removed")
+  } # if na_rm = "warn", a warning appears if NA values are present in dataframe
+  else if(na_rm == "warn"){
+    if(any(is.na(all)) == TRUE){
+      print("Warning: data contain NA values")
+      # if no NA values are present, the message "No NA values" is printed
+    } else{print("No NA values")}
+  } # if na_rm = "include", NA values are included without a warning message
+  else if(na_rm == "include"){
+    all <- all
+  }
+  write.csv(all, file = paste(place, "_allData.csv", sep = ""), row.names = FALSE) 
+}
+
+
 #supporting function #3
 #Write a function to summarize the compiled data set in terms of
   #number of screens run
   #percent of patients screened that were infected
   #percent of female patients infected and percent of male patients infected
   #the age distribution graphs of all patients screened and of all patients infected
-  #graph of percentage of infected patients for 10 year age group ranges to see if one age group range is more susceptible
-
+  
 #load data
 allData <- read.csv ("/users/sydneyharris/desktop/allData.csv", header = T)
 
@@ -32,9 +85,9 @@ summarize_data <- function(data){
       data$infected[i] <- 0 #make the value in the column "infected" equal to 0, meaning that patient is not infected
     }
   }
-  #sum values in the "infected" column which will give the total number infected
+  #sum values in the "infected" column which will give the total number of infected patients
   num_infect <- sum(data[,"infected"])
-  #calculate the percent of patients infected by dividing the total number infected by the total number of screens run
+  #calculate the percent of patients infected by dividing the number of infected patients by the total number of screens run
   percent_infected <- (num_infect/total)*100
   print("percent of all patients infected:")
   print(percent_infected)
@@ -42,11 +95,11 @@ summarize_data <- function(data){
   #create variables for:
   #number of female patients infected
   num_female_inf <- 0
-  #total number of female patients
+  #total number of female patients screened
   total_female <-0
   #number of male patients infected
   num_male_inf <- 0
-  #total number of male patients
+  #total number of male patients screened
   total_male <- 0
   #for each row in the data set: evaluate whether the patient is female or male and whether they are infected or not
   for (i in 1:nrow(data)) { 
@@ -98,28 +151,26 @@ summarize_data <- function(data){
     theme_classic()+
     labs(title="Age Distribution of Patients Infected")
   print(infected_graph)
-  #create graph to show percent of patients infected for each 10 year age range
+}
+  
+
+
+#create another custom function that creates a graph to show percent of patients infected for each 10 year age range
+#this will help show if a particular age range is more susceptible to infection 
+percent_age_infections <- function(data){
+  #create column in data set that will hold whether the patient was infected (value=1) or not infected (value=0)
+  data$infected <- numeric(length(1:nrow(data)))
+  for (i in 1:nrow(data)){ #for each row in the data set, sum the values of all of the marker columns
+    if (sum(data[i, 3:12]) >=1){ #if the sum is greater than 1 (ie. the patient has at least one marker)
+      data$infected[i] <- 1 #make the value in the column "infected" equal to 1, meaning that patient is infected
+    }else if (sum(data[i, 3:12])<1){ #if the sum is less than 1 (ie. the patient has no markers)
+      data$infected[i] <- 0 #make the value in the column "infected" equal to 0, meaning that patient is not infected
+    }
+  }
   #create variables to store information for total number of patients screened and number of patients infected within an age group
-  infected_10 <- 0
-  total_10 <-0
-  infected_20 <- 0
-  total_20 <-0
-  infected_30 <- 0
-  total_30 <-0
-  infected_40 <- 0
-  total_40 <-0
-  infected_50 <- 0
-  total_50 <-0
-  infected_60 <- 0
-  total_60 <-0
-  infected_70 <- 0
-  total_70 <-0
-  infected_80 <- 0
-  total_80 <-0
-  infected_90 <- 0
-  total_90 <-0
-  infected_100 <- 0
-  total_100 <-0
+  #exclude data for patients older than 100, which was likely an error in data collection or entry
+  infected_by_age <- numeric (10)
+  total_by_age <- numeric (10)
   #for each row in the data set: determine if age is within a 10 year range and whether the patient is infected
   for (i in 1:nrow(data)) { 
     #create variable for the age of the patient
@@ -127,131 +178,121 @@ summarize_data <- function(data){
     #if the patient is 0 to 10 years old:
     if (0<age && age<=10){ 
       #add 1 to the total number of 0-10 year old patients screened
-      total_10 <- total_10+1 
+      total_by_age[1] <- total_by_age[1]+1 
       if (data$infected[i] == 1){ 
         #add 1 to the total number of 0-10 year old patients infected
-        infected_10 <- infected_10+1 
+        infected_by_age[1] <- infected_by_age[1]+1 
       }else if (data$infected[i] == 0){ 
         #add 0 to the total number of 0-10 year old patients infected
-        infected_10 <- infected_10+0
+        infected_by_age[1] <- infected_by_age[1]+0
       }
     #if the patient is 11 to 20 years old:
     } else if (10<age && age<=20){ 
       #add 1 to the total number of 11-20 year old patients screened
-      total_20 <- total_20+1 
+      total_by_age[2] <- total_by_age[2]+1 
       if (data$infected[i] == 1){ 
         #add 1 to the total number of 11-20 year old patients infected
-        infected_20 <- infected_20+1 
+        infected_by_age[2] <- infected_by_age[2]+1
       }else if (data$infected[i] == 0){ 
         #add 0 to the total number of 11-20 year old patients infected
-        infected_20 <- infected_20+0
+        infected_by_age[2] <- infected_by_age[2]+0
       }
     #if the patient is 21 to 30 years old:
     }else if (20<age && age<=30){ 
       #add 1 to the total number of 21-30 year old patients screened
-      total_30 <- total_30+1 
+      total_by_age[3] <- total_by_age[3]+1  
       if (data$infected[i] == 1){ 
         #add 1 to the total number of 21-30 year old patients infected
-        infected_30 <- infected_30+1 
+        infected_by_age[3] <- infected_by_age[3]+1 
       }else if (data$infected[i] == 0){ 
         #add 0 to the total number of 21-30 year old patients infected
-        infected_30 <- infected_30+0
+        infected_by_age[3] <- infected_by_age[3]+0
       }
     #if the patient is 31 to 40 years old:
     }else if (30<age && age<=40){ 
       #add 1 to the total number of 31-40 year old patients screened
-      total_40 <- total_40+1 
+      total_by_age[4] <- total_by_age[4]+1  
       if (data$infected[i] == 1){ 
         #add 1 to the total number of 31-40 year old patients screened
-        infected_40 <- infected_40+1 
+        infected_by_age[4] <- infected_by_age[4]+1 
       }else if (data$infected[i] == 0){ 
         #add 0 to the total number of 31-40 year old patients infected
-        infected_40 <- infected_40+0
+        infected_by_age[4] <- infected_by_age[4]+0
       }
     #if the patient is 41 to 50 years old:
     }else if (40<age && age<=50){ 
      #add 1 to the total number of 41-50 year old patients screened
-      total_50 <- total_50+1 
+      total_by_age[5] <- total_by_age[5]+1  
       if (data$infected[i] == 1){
         #add 1 to the total number of 41-50 year old patients infected
-        infected_50 <- infected_50+1 
+        infected_by_age[5] <- infected_by_age[5]+1 
       }else if (data$infected[i] == 0){ 
         #add 0 to the total number of 41-50 year old patients infected
-        infected_50 <- infected_50+0
+        infected_by_age[5] <- infected_by_age[5]+0
       }
     #if the patient is 51 to 60 years old:
     }else if (50<age && age<=60){ 
       #add 1 to the total number of 51-60 year old patients screened
-      total_60 <- total_60+1 
+      total_by_age[6] <- total_by_age[6]+1  
       if (data$infected[i] == 1){ 
         #add 1 to the total number of 51-60 year old patients infected
-        infected_60 <- infected_60+1 
+        infected_by_age[6] <- infected_by_age[6]+01
       }else if (data$infected[i] == 0){ 
         #add 0 to the total number of 51-60 year old patients infected
-        infected_60 <- infected_60+0
+        infected_by_age[6] <- infected_by_age[6]+0
       }
     #if the patient is 61 to 70 years old:
     }else if (60<age && age<=70){ 
       #add 1 to the total number of 61-70 year old patients screened
-      total_70 <- total_70+1 
+      total_by_age[7] <- total_by_age[7]+1  
       if (data$infected[i] == 1){ 
         #add 1 to the total number of 61-70 year old patients infected
-        infected_70 <- infected_70+1 
+        infected_by_age[7] <- infected_by_age[7]+1 
       }else if (data$infected[i] == 0){ 
         #add 0 to the total number of 61-70 year old patients infected
-        infected_70 <- infected_70+0
+        infected_by_age[7] <- infected_by_age[7]+0
       }
     #if the patient is 71 to 80 years old:
     }else if (70<age && age<=80){ 
       #add 1 to the total number of 71-80 year old patients screened
-      total_80 <- total_80+1 
+      total_by_age[8] <- total_by_age[8]+1  
       if (data$infected[i] == 1){ 
         #add 1 to the total number of 71-80 year old patients infected
-        infected_80 <- infected_80+1 
+        infected_by_age[8] <- infected_by_age[8]+1
       }else if (data$infected[i] == 0){ 
         #add 0 to the total number of 71-80 year old patients infected
-        infected_80 <- infected_80+0
+        infected_by_age[8] <- infected_by_age[8]+0
       }
     #if the patient is 81 to 90 years old:
     }else if (80<age && age<=90){ 
       #add 1 to the total number of 81-90 year old patients screened
-      total_90 <- total_90+1 
+      total_by_age[9] <- total_by_age[9]+1  
       if (data$infected[i] == 1){ 
         #add 1 to the total number of 81-90 year old patients infected
-        infected_90 <- infected_90+1 
+        infected_by_age[9] <- infected_by_age[9]+1 
       }else if (data$infected[i] == 0){ 
         #add 0 to the total number of 81-90 year old patients infected
-        infected_90 <- infected_90+0
+        infected_by_age[9] <- infected_by_age[9]+0
       }
     #if the patient is 91 to 100 years old:
     }else if (90<age && age<=110){ 
       #add 1 to the total number of 81-90 year old patients screened
-      total_100 <- total_100+1 
+      total_by_age[10] <- total_by_age[10]+1 
       if (data$infected[i] == 1){ 
         #add 1 to the total number of 91-100 year old patients infected
-        infected_100 <- infected_100+1 
+        infected_by_age[10] <- infected_by_age[10]+1 
       }else if (data$infected[i] == 0){ 
         #add 0 to the total number of 91-100 year old patients infected
-        infected_100 <- infected_100+0
+        infected_by_age[10] <- infected_by_age[10]+0
       }
     }
   }
   #calculate percentages of infected patients for each age group 
-  percent_10 <- (infected_10/total_10)*100
-  percent_20 <- (infected_20/total_20)*100
-  percent_30 <- (infected_30/total_30)*100
-  percent_40 <- (infected_40/total_40)*100
-  percent_50 <- (infected_50/total_50)*100
-  percent_60 <- (infected_60/total_60)*100
-  percent_70 <- (infected_70/total_70)*100
-  percent_80 <- (infected_80/total_80)*100
-  percent_90 <- (infected_90/total_90)*100
-  percent_100 <- (infected_100/total_100)*100
+  age_percents <- numeric (10)
+  age_percents <- (infected_by_age/total_by_age)*100
   #create vector with all age ranges
   age_ranges <- c("0-10", "11-20","21-30","31-40","41-50","51-60","61-70","71-80","81-90","91-100")
-  #create vector with all infected patient percentages for each age group
-  age_percents <- c(percent_10, percent_20, percent_30, percent_40, percent_50, percent_60, percent_70, percent_80, percent_90, percent_100)
-  #create data frame for each age group and the percent of patients infected
+  #create data frame with age ranges and percent infected by age group
   age_infected_data <- data.frame(age_ranges, age_percents)
   #graph data to display percent of patients infected for each each group to see if one age group is more susceptible
   infected_by_age_graph <- ggplot(age_infected_data, aes(x=age_ranges, y=age_percents))+
@@ -263,4 +304,3 @@ summarize_data <- function(data){
   print(infected_by_age_graph)
   print(age_infected_data)
 }
-
