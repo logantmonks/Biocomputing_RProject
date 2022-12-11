@@ -3,11 +3,11 @@
 ## 14 December 2022
 
 ## set working directory
-# maybe let's type another brief paragraph describing our file structure like last time?
 setwd("~/Desktop/IntroBiocomputing/R/Biocomputing_RProject/Rproject2022")
 
 # load necessary libraries
 library(ggplot2)
+library(tidyr)
 
 ## Data prep
 
