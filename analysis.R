@@ -3,7 +3,7 @@
 ## 14 December 2022
 
 ## set working directory
-setwd("~/Desktop/IntroBiocomputing/R/Biocomputing_RProject/Rproject2022")
+setwd("~/Desktop/IntroBiocomputing/R/Biocomputing_RProject")
 
 # load necessary libraries
 library(ggplot2)
@@ -12,26 +12,56 @@ library(tidyr)
 ## Data prep
 
 # load functions from supportingFunctions script
-source(supportingFunctions.R)
+source("~/Desktop/IntroBiocomputing/R/Biocomputing_RProject/supportingFunctions.R")
 
 # convert country Y txt files to csv files
 txt_to_csv("/Users/claytonglasgow/Desktop/IntroBiocomputing/R/Biocomputing_RProject/Rproject2022/countryY")
 
 # use compileFiles function to merge all csv files from country X and country Y
 # country X 
+# set working directory to country X
+setwd("~/Desktop/IntroBiocomputing/R/Biocomputing_RProject/Rproject2022/countryX")
 compileFiles("~/Desktop/IntroBiocomputing/R/Biocomputing_RProject/Rproject2022/countryX",
              type = "csv", place = "X", na_rm = "warn")
 # country Y 
+# set working directory to country Y
+setwd("~/Desktop/IntroBiocomputing/R/Biocomputing_RProject/Rproject2022/countryY")
 compileFiles("~/Desktop/IntroBiocomputing/R/Biocomputing_RProject/Rproject2022/countryY",
              type = "csv", place = "Y", na_rm = "warn")
 
+# set working directory to general project folder
+setwd("~/Desktop/IntroBiocomputing/R/Biocomputing_RProject/Rproject2022")
+
 # load country X and country Y full data csv files and merge them to create one large dataframe
-allData_x <- read.csv("X_allData.csv", header = TRUE)
-allData_y <- read.csv("Y_allData.csv", header = TRUE)
+allData_x <- read.csv("countryX/X_allData.csv", header = TRUE)
+allData_y <- read.csv("countryY/Y_allData.csv", header = TRUE)
 allData <- rbind(allData_x, allData_y)
 
 # use summarize_data to gain preliminary insight into disease trends
 summarize_data(allData)
+# non-graphical output:
+# number of screens run: 39888
+# percent of all patients infected: 56.55084
+# percent of female patients infected: 56.61942
+# percent of male patients infected: 56.48259
+# These summary statistics indicate that male and female patients are equally susceptible to the novel disease.
+
+# use percent_age_infections function to graph the percentage of infected individuals from each 10-year age group
+percent_age_infections(allData)
+# non-graphical output:
+#    age group    percent of individuals infected from that age group
+#        0-10     56.71854
+#       11-20     56.10936
+#       21-30     57.01200
+#       31-40     56.14162
+#       41-50     57.72595
+#       51-60     53.28467
+#       61-70     55.32787
+#       71-80     57.85714
+#       81-90     51.40187
+#       91-100    59.63303
+# as can be seen from this output and the accompanying graph, all 10-year age groups are 
+# approximately equally susceptible to the novel disease.
 
 #Question 1: In which country (X or Y) did the disease outbreak likely begin?
 #To answer this question, we are going to analyze the trend in number of infections
@@ -133,14 +163,14 @@ long_markers_infected <- long_markers[long_markers$status == 1,]
 
 # plot infection over time, faceted by marker to see number of positive tests per marker over time
 ggplot(long_markers_infected, aes(x = dayofYear)) +
-  geom_histogram() +
+  geom_histogram(binwidth = 1) +
   facet_wrap(~marker) +
   theme_classic() +
   xlab("Day of year") +
   ylab("Number of positive tests")
-# plot, color by marker (harder to interpret)
+# plot, color by marker (harder to interpret but cooler to look at)
 ggplot(long_markers_infected, aes(x = dayofYear, fill = marker)) +
-  geom_histogram() +
+  geom_histogram(binwidth = 1) +
   theme_classic() +
   xlab("Day of year") +
   ylab("Number of positive tests")
