@@ -4,6 +4,7 @@
 
 # supporting function #1
 # function to compile data from all csv files in a directory into a single csv file
+# note: you must set your working directory to be the same directory used as the function argument
 # compile_csv(dir, type, place, start = 8, stop = 10, na_rm): 
 # "dir" = path to directory of interest
 # "type" = file type to include in compilation ("csv", "txt", etc)
