@@ -16,7 +16,11 @@
 #           na_rm = "warn": if NA values are present, a warning message appears
 #           na_rm = "include": NA values are included without a warning
 compileFiles <- function(dir, type, place, start = 8, stop = 10, na_rm){
-  # create a list of files from the directory of interest
+  # create object with current working directory to be able to run function without changing directories
+  wd <- getwd()
+  # set working directory to directory with files of interest
+  setwd(dir) 
+   # create a list of files from the directory of interest
   file_list <- list.files(dir, type)
   # read in first file in file_list; this will be the dataframe to which all
   # subsequent csv's will be appended
@@ -54,6 +58,9 @@ compileFiles <- function(dir, type, place, start = 8, stop = 10, na_rm){
     else if(na_rm == "include"){
     all <- all
     }
+  # reset working directory to original working directory to place output file in the directory you are working in
+  setwd(wd)
+  # write csv file with all data
   write.csv(all, file = paste(place, "_allData.csv", sep = ""), row.names = FALSE) 
 }
 
