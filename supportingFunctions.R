@@ -1,7 +1,6 @@
 ## Intro to Biocomputing Final R Project: Supporting Functions
 ## Clayton Glasgow, Sydney Harris, Jaden Bailey
 ## 14 December 2022
-# set working directory
 
 # supporting function #1
 # function to compile data from all csv files in a directory into a single csv file
@@ -57,7 +56,23 @@ compileFiles <- function(dir, type, place, start = 8, stop = 10, na_rm){
   write.csv(all, file = paste(place, "_allData.csv", sep = ""), row.names = FALSE) 
 }
 
-#supporting function #2
+# supporting function #2
+# convert files from txt to csv
+# text_to_csv(dir):
+# "dir" = path to directory of interest
+txt_to_csv <- function(dir){
+  # create a list of txt files to convert to csv in provided directory
+  files<-list.files(dir, pattern ="*.txt", full.names = TRUE, recursive = FALSE)
+  # loop through file list to convert each txt file within the directory to csv
+  for (file in files){
+    # read in the ith file
+    read<-read.table(file, sep = "", header = FALSE)
+    # replace "txt" with "csv"
+    filename<-gsub(".txt", ".csv", file)
+    # rewrite file as csv
+    write.table(read, file = filename, sep=",", row.names=FALSE, col.names=FALSE)
+  }
+}
 
 #supporting function #3
 #Write a function to summarize the compiled data set in terms of
@@ -65,11 +80,8 @@ compileFiles <- function(dir, type, place, start = 8, stop = 10, na_rm){
   #percent of patients screened that were infected
   #percent of female patients infected and percent of male patients infected
   #the age distribution graphs of all patients screened and of all patients infected
-  
-#load data
-allData <- read.csv ("/users/sydneyharris/desktop/allData.csv", header = T)
-
-#create custom function called summarize_data()
+# summarize_data(data):
+# "data" = dataframe of interest; must be of the format of the screening data provided by countries X and Y
 summarize_data <- function(data){
   #find number of screens run
   total <- nrow(data)
@@ -159,6 +171,8 @@ summarize_data <- function(data){
 
 #create another custom function that creates a graph to show percent of patients infected for each 10 year age range
 #this will help show if a particular age range is more susceptible to infection 
+# precent_age_infections(data):
+# "data" = dataframe of interest; must be of the format of the screening data provided by countries X and Y
 percent_age_infections <- function(data){
   #create column in data set that will hold whether the patient was infected (value=1) or not infected (value=0)
   data$infected <- numeric(length(1:nrow(data)))
