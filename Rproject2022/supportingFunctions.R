@@ -3,12 +3,16 @@ convertToCSV <- function(dirCountry){
   setwd(dirCountry)
   #creates list of files with the .txt ending
   filelist = list.files(pattern = "\\.txt")
-  #change the name and converts .txt to .csv
-  for (i in 1:length(filelist)){
-    input<-filelist[i]
-    output<-paste0(gsub("\\.txt$","",input),".csv")
-    data = read.table(input, header = TRUE)   
-    write.table(data, file=output, sep=",", col.names=TRUE)
+  if(length(filelist) == 0){
+    print("There are no '.txt' files to be converted in this country's directory. Please try another.")
+  }else{
+    #change the name and converts .txt to .csv
+    for (i in 1:length(filelist)){
+      input<-filelist[i]
+      output<-paste0(gsub("\\.txt$","",input),".csv")
+      data = read.table(input, header = TRUE)   
+      write.table(data, file=output, sep=",", col.names=TRUE)
+    }
   }
 }
 
@@ -54,9 +58,9 @@ screenStats <- function(allData){
   
   for(i in 1:nrow(allData)){
     if(allData$any_marker[i] < 1){
-      allData$any_marker[i] = "Not Infected"
+      allData$infected_marker[i] = "Not Infected"
     }else{
-      allData$any_marker[i] = "Infected"
+      allData$infected_marker[i] = "Infected"
     }
   }
   
@@ -97,5 +101,6 @@ screenStats <- function(allData){
   output_final <- c()
   output_final[[1]] <- p
   output_final[[2]] <- output
+  output_final[[3]] <- allData
   return(output_final)
 }
