@@ -12,10 +12,10 @@ library(tidyr)
 ## Data prep
 
 # load functions from supportingFunctions script
-#source(supportingFunctions.R)
+source(supportingFunctions.R)
 
 # convert country Y txt files to csv files
-# Jaden_function_here
+txt_to_csv("/Users/claytonglasgow/Desktop/IntroBiocomputing/R/Biocomputing_RProject/Rproject2022/countryY")
 
 # use compileFiles function to merge all csv files from country X and country Y
 # country X 
@@ -38,9 +38,6 @@ summarize_data(allData)
 #over time in both countries. If one country shows a much larger number of infections
 #during early screening days than the other, this would indicate that the disease
 #originated in that country.
-
-# load data
-allData <- read.csv("allData.csv", header = TRUE)
 
 # filter data to reasonable age group
 young <- allData[allData$age < 101,]
@@ -122,9 +119,10 @@ ggplot(marker_infected_data, aes(x=marker_names, y=y_data))+
 #Bonus: disease evolution
 #Given the short generation time of the disease-causing bacteria, it is suspected that 
 #the bacteria is evolving along its transmission path.
-#we hypothesize that a change in markers present over time indicates bacterial evolution
+#Given this expected evolution, we hypothesize that the markers present in the populations will change over time.
 
 # plot markers present over time
+
 # convert data to long format
 long <- gather(young, key = "marker", value = "status", 3:12)
 
