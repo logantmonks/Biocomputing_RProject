@@ -18,7 +18,7 @@ txt2csv <- function(wd = NULL, deltxt = NULL) {
 #   the .txt extension with .csv
   for (i in 1:length(list_txt)) {
     file_name <- gsub(pattern = "\\.txt", replacement = ".csv", x = list_txt[i])
-# Tables from .txt files read to overwriting "data" object, also includes col names
+# Tables from .txt files rˇead to overwriting "data" object, also includes col names
     data <- read.table(file = list_txt[i], header = TRUE)
 # Writes csv from "data" object, using "file_name" constructed above and
 #   excludes row/col names
