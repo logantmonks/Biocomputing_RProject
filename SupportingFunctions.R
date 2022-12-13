@@ -32,3 +32,4 @@ txt2csv <- function(wd = NULL, deltxt = NULL) {
 }
 
 # FUNCTION 2: 
+
