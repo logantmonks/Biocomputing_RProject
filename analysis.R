@@ -19,22 +19,16 @@ txt_to_csv("/Users/claytonglasgow/Desktop/IntroBiocomputing/R/Biocomputing_RProj
 
 # use compileFiles function to merge all csv files from country X and country Y
 # country X 
-# set working directory to country X
-setwd("~/Desktop/IntroBiocomputing/R/Biocomputing_RProject/Rproject2022/countryX")
 compileFiles("~/Desktop/IntroBiocomputing/R/Biocomputing_RProject/Rproject2022/countryX",
              type = "csv", place = "X", na_rm = "warn")
 # country Y 
-# set working directory to country Y
-setwd("~/Desktop/IntroBiocomputing/R/Biocomputing_RProject/Rproject2022/countryY")
 compileFiles("~/Desktop/IntroBiocomputing/R/Biocomputing_RProject/Rproject2022/countryY",
              type = "csv", place = "Y", na_rm = "warn")
 
-# set working directory to general project folder
-setwd("~/Desktop/IntroBiocomputing/R/Biocomputing_RProject/Rproject2022")
 
 # load country X and country Y full data csv files and merge them to create one large dataframe
-allData_x <- read.csv("countryX/X_allData.csv", header = TRUE)
-allData_y <- read.csv("countryY/Y_allData.csv", header = TRUE)
+allData_x <- read.csv("X_allData.csv", header = TRUE)
+allData_y <- read.csv("Y_allData.csv", header = TRUE)
 allData <- rbind(allData_x, allData_y)
 
 # use summarize_data to gain preliminary insight into disease trends
