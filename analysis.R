@@ -59,25 +59,91 @@ ggplot(new_data, aes(x = dayofYear, y = cum_marker, group = country,
 # If Country Y develops a vaccine for the disease, is it likely to work for
 # the citixens of Country X?
 
+# Let's sum the markers 1-10 based on country and create a new dataframe.
+for (column in new_data[3:12]){ # We have to use the full column from the data,
+	# otherwise aggregate will be unhappy because it will only read a variable 
+	# and not a full column.
+	if(!exists("new_df")){ # This is just to reiterate onto a dataframe
+		new_df <- aggregate(column ~ country, new_data, sum) # Summing column by country
+	} else if (exists("new_df")){ # Appending onto previously created df
+		temp_df <- aggregate(column ~ country, new_data, sum)
+		new_df <- rbind(new_df, temp_df)
+		rm(temp_df)
+	}
+}
+
+# Great! That worked. But we're missing marker numbers for the data. 
+# Let's add that posthumously, because we're working with columns in the 
+# for loop.
+for (row in nrow(new_df)){
+	for (number in 1:10){
+		new_df$marker <- number
+	}
+}
+
+new_df
+
+if (!exists("compiled_data_country2")){ 
+			compiled_data_country2 <- read.csv(file = paste(path_country2, 
+				"/", file_name, sep = ""), header = TRUE)
+			screen_day <- sub(".csv", "", sub("screen_", "", noquote(file_name)))
+			compiled_data_country2$dayofYear <- screen_day 
+		}else if (exists("compiled_data_country2")){
+			temp_data <- read.csv(file = paste(path_country2, "/", 
+				file_name, sep = ""), header = TRUE) 
+			temp_day <- sub(".csv", "", sub("screen_", "", noquote(file_name)))
+			temp_data$dayofYear <- temp_day
+			compiled_data_country2 <- rbind(compiled_data_country2, temp_data)
+			rm(temp_data)
+		}
+}
+
+
+# Remove NA's
+new_data2 <- new_data[complete.cases(new_data),]
+
 # Let's average the markers 1-10 based on country and create a new dataframe.
 for (num in 1:10){
 	if (num < 10){
 		temp_marker <- noquote(paste0("marker0", num))
-		aggregate(temp_marker ~ country, new_data, sum)
+		aggregate(temp_marker ~ country, new_data2, sum)
 		rm(temp_marker)
 	} else{
-		aggregate(noquote(paste0("marker", num)) ~ country, new_data, sum)
+		aggregate(noquote(paste0("marker", num)) ~ country, new_data2, sum)
 	}
 }
 
+for (num in 1:10){
+	if (num < 10){
+		temp_marker <- noquote(paste0("marker0", num))
+		print(temp_marker)
+		print(aggregate(marker01 ~ country, new_data2, sum))
+		rm(temp_marker)
+	} else{
+		aggregate(noquote(paste0("marker", num)) ~ country, new_data2, sum)
+	}
+}
+
+# THIS WORKS
+for (column in new_data2[3:12]){
+	print(aggregate(column ~ country, new_data2, sum))
+}
+
+View(new_data2)
+
 aggregate(noquote(paste0("marker0", 1)) ~ country, new_data, sum)
+
 aggregate(marker01 ~ country, new_data, sum)
+aggregate(marker02 ~ country, new_data, sum)
+aggregate(marker03 ~ country, new_data, sum)
+
+
 aggregate
 
-columns <- colnames(new_data[3:12])
+columns <- new_data2[3:12]
 
-for (col in list(columns)){
-	print(aggregate(col ~ country, new_data, sum))
+for (col in columns){
+	print(aggregate(col ~ country, new_data2, sum))
 }
 
 
