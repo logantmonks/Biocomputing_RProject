@@ -31,29 +31,54 @@ summarizer(compiledData)
 
 # Let's see if we can graph the presence of infected individuals with days 
 # on the x-axis.
-# To start, I think it'd be easiest to have a simple "infected: Y/N" column.
+# To start, I think it'd be easiest to use the # of markers as a proxy for
+# infections (because, at the very least, 0 markers = 0 infected).
 # Let's copy the raw data to a new object
 new_data <- compiledData
 # Make a column with how many markers a patient has
 new_data$marker_sum <- rowSums(new_data[3:12])
-# Now let's run a for loop to determine if that patient is infected or not
-for(i in 1:nrow(new_data)){ # each row is a patient/screening
-	# If that column is > 0, the patient is infected
-    if(new_data$marker_sum == 0){
-      new_data$infected <- 0
-    } else{
-    	new_data$infected <- 1
-    }
-}
-
-# Nevermind let's use marker sum as a proxy for infections
+# Now let's make a column with the cumulative sum of markers by country.
+new_data$cum_marker <- ave(new_data$marker_sum, new_data$country, FUN = cumsum)
 
 # Now let's get to graphing.
 library(ggplot2)
-ggplot(new_data, aes(x = dayofYear, y = marker_sum, group = country, 
+ggplot(new_data, aes(x = dayofYear, y = cum_marker, group = country, 
 	color = country)) +
-	geom_point()
+	geom_line() +
+	xlab("Day of year") +
+	ylab("Cumulative marker count") +
+	theme_minimal()
 
+# To answer question 1: We believe that the disease first broke out in 
+# Country X, given how much sooner Country X has markers (infected) present 
+# in their population before Country Y, who doesn't have any markers until
+# about day 140, a whole 20 days after Country X.
+
+
+# Question 2 ----
+# If Country Y develops a vaccine for the disease, is it likely to work for
+# the citixens of Country X?
+
+# Let's average the markers 1-10 based on country and create a new dataframe.
+for (num in 1:10){
+	if (num < 10){
+		temp_marker <- noquote(paste0("marker0", num))
+		aggregate(temp_marker ~ country, new_data, sum)
+		rm(temp_marker)
+	} else{
+		aggregate(noquote(paste0("marker", num)) ~ country, new_data, sum)
+	}
+}
+
+aggregate(noquote(paste0("marker0", 1)) ~ country, new_data, sum)
+aggregate(marker01 ~ country, new_data, sum)
+aggregate
+
+columns <- colnames(new_data[3:12])
+
+for (col in list(columns)){
+	print(aggregate(col ~ country, new_data, sum))
+}
 
 
 
