@@ -44,7 +44,7 @@ compiler <- function(
 			temp_day <- sub(".csv", "", sub("screen_", "", noquote(file_name)))
 			temp_data$dayofYear <- temp_day
 			# Bind the 2nd file onto the existing comp file
-			compiled_data_country1 <- unique(rbind(compiled_data_country1, temp_data))
+			compiled_data_country1 <- rbind(compiled_data_country1, temp_data)
 			rm(temp_data) # Then remove the temp file to redo process for all files
 		}
 	}
@@ -63,7 +63,7 @@ compiler <- function(
 				file_name, sep = ""), header = TRUE) 
 			temp_day <- sub(".csv", "", sub("screen_", "", noquote(file_name)))
 			temp_data$dayofYear <- temp_day
-			compiled_data_country2 <- unique(rbind(compiled_data_country2, temp_data))
+			compiled_data_country2 <- rbind(compiled_data_country2, temp_data)
 			rm(temp_data)
 		}
 	}
