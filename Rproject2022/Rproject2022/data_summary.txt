@@ -1,0 +1,7 @@
+Number of Screens: 39888
+Percent of Patients Screened that were Infected: 56.550842%
+Number of Males Screened: 19992
+Number of Females Screened: 19896
+Number of Males Infected: 11292
+Number of Females Infected: 11265
+
