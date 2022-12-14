@@ -89,70 +89,48 @@ compiler <- function(
 
 
 #Third Function
-Compiling_data <- function(){
-  #Country Y 
-  setwd("~/Desktop/Biocomputing_RProject-main/Rproject2022/new_countryY/")
-  files_Y <- list.files(path="~/Desktop/Biocomputing_RProject-main/Rproject2022/new_countryY/", pattern="*.csv")
-  for(i in 1:length(files_Y)){
-   compiled_data_countryY <- read.csv(files_Y[i], header= TRUE)
-  }
-  Number_Screens_CountryY = nrow(compiled_data_countryY)
-  Number_Infected_CountryY = 0
-  Number_Female_CountryY = 0
-  Number_Male_CountryY = 0
-  for(i in 1:nrow(compiled_data_countryY)){
-    #Counts for infected individuals
-    if(compiled_data_countryY[i, 3]==1 || compiled_data_countryY[i, 4]==1 || compiled_data_countryY[i, 5]==1 
-       || compiled_data_countryY[i, 6]==1 || compiled_data_countryY[i, 7]==1 || compiled_data_countryY[i, 8]==1 ||
-         compiled_data_countryY[i, 9]==1 || compiled_data_countryY[i, 10]==1 || compiled_data_countryY[i, 11]==1 
-       || compiled_data_countryY[i, 12]==1 ){
-      Number_Infected_CountryY = Number_Infected_CountryY + 1
-      
+summarize_data <- function(file_name){
+  compiledData <- read.csv(file = file_name, header = TRUE)
+	Number_Screens = nrow(compiledData)
+  Number_Infected = 0
+  Number_Female = 0
+  Number_Male = 0
+  
+  for(i in 1:nrow(compiledData)){
+    # Counts for infected individuals
+  	# If any of the marker rows contain a value, the individual is infected and
+  	# counted.
+    if(compiledData[i, 3]==1 || compiledData[i, 4]==1 || compiledData[i, 5]==1 
+       || compiledData[i, 6]==1 || compiledData[i, 7]==1 || compiledData[i, 8]==1 ||
+         compiledData[i, 9]==1 || compiledData[i, 10]==1 || compiledData[i, 11]==1 
+       || compiledData[i, 12]==1 ){
+      Number_Infected = Number_Infected + 1
     }
     
-    #Counts females vs males 
-    if(compiled_data_countryY[i,1]=="female"){
-      Number_Female_CountryY = Number_Female_CountryY + 1
+    # Counts of females and males 
+    if(compiledData[i, 1]=="female"){
+      Number_Female = Number_Female + 1
     } else{
-      Number_Male_CountryY = Number_Male_CountryY + 1
+      Number_Male = Number_Male + 1
     }
-    
   }
   
   # Percentage of infected individuals in country Y
-  Percentage_Infected_CountryY = Number_Infected_CountryY / Number_Screens_CountryY * 100
+  Percentage_Infected = Number_Infected / Number_Screens * 100
   
+  # Calculating distribution
+  # Start with the mean
+  Age_Mean <- mean(compiledData$age)
+  # Then calculate the standard deviation
+  Age_SD <- sd(compiledData$age)
   
-  #Country X 
-  setwd("~/Desktop/Biocomputing_RProject-main/Rproject2022/countryX/")
-  files_X <- list.files(path="~/Desktop/Biocomputing_RProject-main/Rproject2022/countryX/", pattern="*.csv")
-  for(i in 1:length(files_X)){
-    compiled_data_countryX <- read.csv(files_X[i], header= TRUE)
-  }
-  Number_Screens_CountryX = nrow(compiled_data_countryX)
-  Number_Infected_CountryX = 0
-  Number_Female_CountryX = 0
-  Number_Male_CountryX = 0
-  for(i in 1:nrow(compiled_data_countryX)){
-    #Counts for infected individuals
-    if(compiled_data_countryX[i, 3]==1 || compiled_data_countryX[i, 4]==1 || compiled_data_countryX[i, 5]==1 
-       || compiled_data_countryX[i, 6]==1 || compiled_data_countryX[i, 7]==1 || compiled_data_countryX[i, 8]==1 ||
-       compiled_data_countryX[i, 9]==1 || compiled_data_countryX[i, 10]==1 || compiled_data_countryX[i, 11]==1 
-       || compiled_data_countryX[i, 12]==1 ){
-      Number_Infected_CountryX = Number_Infected_CountryX + 1
-      
-    }
-    
-    #Counts females vs males 
-    if(compiled_data_countryX[i,1]=="female"){
-      Number_Female_CountryX = Number_Female_CountryX + 1
-    } else{
-      Number_Male_CountryX = Number_Male_CountryX + 1
-    }
-    
-  }
-  # Percentage of infected individuals in country X
-  Percentage_Infected_CountryX = Number_Infected_CountryX / Number_Screens_CountryX * 100
+  # Print data to console
+  cat("\nCompiled data summary:")
+  cat("\nNumber of screens done: ", Number_Screens, sep = "")
+  cat("\nPercent of patients infected: ", Percentage_Infected, sep = "")
+  cat("\nNumber of male (", Number_Male, ") and female (", Number_Female, 
+  	") patients", sep = "")
+  cat("\nPatient age distribution: ", Age_Mean, " ± ", Age_SD, sep = "")
 }
 
 # Carol Notes: for the third function, I was using the dplyr package because I thought it was a cool tool. I also understood we were supposed to use the 
