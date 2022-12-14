@@ -1,100 +1,104 @@
 #First Function
 Converting_txt_to_csv <- function(){
-setwd("~/Desktop/Biocomputing_RProject-main/Rproject2022/countryY/")
-dir.create("~/Desktop/Biocomputing_RProject-main/Rproject2022/new_countryY")
-filelist = list.files(pattern = ".txt")
-for (i in 1:length(filelist)){
-  input <- filelist[i]
-  output <- paste0(gsub("\\.txt$", "", input), ".csv")
-  print(paste("Processing the file: ", input))
-  data = read.table(input, header = TRUE)   
-  setwd("~/Desktop/Biocomputing_RProject-main/Rproject2022/new_countryY/")
-  write.csv(data, file=output, sep="," , col.names = TRUE, row.names=FALSE)
-  setwd("~/Desktop/Biocomputing_RProject-main/Rproject2022/countryY/")
-}
+  Working_directory = readline(prompt = "Type the directory where countryY can be found")
+  setwd(Working_directory)
+  #setwd("~/Desktop/Biocomputing_RProject-main/Rproject2022/countryY")
+  New_directory = readline(prompt= "Type the directory where the new files will go")
+  dir.create(New_directory)
+  #dir.create("~/Desktop/Biocomputing_RProject-main/Rproject2022/new_countryY")
+  filelist = list.files(pattern = ".txt")
+  for (i in 1:length(filelist)){
+    input <- filelist[i]
+    output <- paste0(gsub("\\.txt$", "", input), ".csv")
+    print(paste("Processing the file: ", input))
+    data = read.table(input, header = TRUE)   
+    setwd(New_directory)
+    write.csv(data, file=output, sep="," , col.names = TRUE, row.names=FALSE)
+    setwd(Working_directory)
+  }
 }
 
 # Second function
 compiler <- function(
-	path_country1, name_country1, path_country2, name_country2, 
-	output_name = "compiledData", remove_NA = TRUE, silent_NA = FALSE){
-	# Create a list of all the files in each directory
-	file_list_country1 <- list.files(path = path_country1)
-	file_list_country2 <- list.files(path = path_country2)
-	# For loop to compile data for country 1
-	for (file_name in file_list_country1){
-		# If the compilation file doesn't exist, then create it by reading the first csv.
-		if (!exists("compiled_data_country1")){ 
-			compiled_data_country1 <- read.csv(file = paste(path_country1, 
-				"/", file_name, sep = ""), header = TRUE)
-			# And add the day from the file name, formatted "screen_xxx.csv"
-			# Begin by creating a substring with just the day
-			screen_day <- sub(".csv", "", sub("screen_", "", noquote(file_name)))
-			compiled_data_country1$dayofYear <- screen_day # Create column w/ day
-		# If the comp file does exist, then add to it by reading and binding the
-		# second .csv, in the "else if" statement below.
-		}else if (exists("compiled_data_country1")){
-			temp_data <- read.csv(file = paste(path_country1, "/", 
-				file_name, sep = ""), header = TRUE) # Create temp data of 2nd file
-			# Add the day from the file name
-			temp_day <- sub(".csv", "", sub("screen_", "", noquote(file_name)))
-			temp_data$dayofYear <- temp_day
-			# Bind the 2nd file onto the existing comp file
-			compiled_data_country1 <- unique(rbind(compiled_data_country1, temp_data))
-			rm(temp_data) # Then remove the temp file to redo process for all files
-		}
-	}
-	# Now let's add the country name to the file
-	compiled_data_country1$country <- name_country1
-	
-	# For loop to compile data for country 2, exact same code as above
-	for (file_name in file_list_country2){
-		if (!exists("compiled_data_country2")){ 
-			compiled_data_country2 <- read.csv(file = paste(path_country2, 
-				"/", file_name, sep = ""), header = TRUE)
-			screen_day <- sub(".csv", "", sub("screen_", "", noquote(file_name)))
-			compiled_data_country2$dayofYear <- screen_day 
-		}else if (exists("compiled_data_country2")){
-			temp_data <- read.csv(file = paste(path_country2, "/", 
-				file_name, sep = ""), header = TRUE) 
-			temp_day <- sub(".csv", "", sub("screen_", "", noquote(file_name)))
-			temp_data$dayofYear <- temp_day
-			compiled_data_country2 <- unique(rbind(compiled_data_country2, temp_data))
-			rm(temp_data)
-		}
-	}
-	# Now let's add the country name to the file
-	compiled_data_country2$country <- name_country2
-	
-	# Combine the 2 country's data
-	compiled_data <- rbind(compiled_data_country1, compiled_data_country2)
-	
-	# Remove NA's
-	# To start, convert the compiled_data into a workable data frame.
-	if (any(is.na(compiled_data)) == TRUE){ # Checks compiled_data for NA's in all rows.
-		# If there are NA's, and remove_NA is TRUE/default, then this removes them.
-		if (remove_NA == TRUE){ 
-			compiled_data <- data.frame(compiled_data)
-			compiled_data <- na.omit(compiled_data) # na.omit removes the row w/ NA's.
-		# If remove_NA is FALSE, and silent_NA is FALSE/default, then warning given.
-		} else if (remove_NA == FALSE & silent_NA == FALSE){
-			warning("Warning: row(s) containing NA's present")
-		} # If remove_NA is FALSE and silent_NA is TRUE, then no warning given.
-	}
-	
-	# Write and save it as a .csv in thje current working directory
-	write.csv(compiled_data, file = paste0("./", output_name, ".csv"), 
-		row.names = FALSE)
+    path_country1, name_country1, path_country2, name_country2, 
+    output_name = "compiledData", remove_NA = TRUE, silent_NA = FALSE){
+  # Create a list of all the files in each directory
+  file_list_country1 <- list.files(path = path_country1)
+  file_list_country2 <- list.files(path = path_country2)
+  # For loop to compile data for country 1
+  for (file_name in file_list_country1){
+    # If the compilation file doesn't exist, then create it by reading the first csv.
+    if (!exists("compiled_data_country1")){ 
+      compiled_data_country1 <- read.csv(file = paste(path_country1, 
+                                                      "/", file_name, sep = ""), header = TRUE)
+      # And add the day from the file name, formatted "screen_xxx.csv"
+      # Begin by creating a substring with just the day
+      screen_day <- sub(".csv", "", sub("screen_", "", noquote(file_name)))
+      compiled_data_country1$dayofYear <- screen_day # Create column w/ day
+      # If the comp file does exist, then add to it by reading and binding the
+      # second .csv, in the "else if" statement below.
+    }else if (exists("compiled_data_country1")){
+      temp_data <- read.csv(file = paste(path_country1, "/", 
+                                         file_name, sep = ""), header = TRUE) # Create temp data of 2nd file
+      # Add the day from the file name
+      temp_day <- sub(".csv", "", sub("screen_", "", noquote(file_name)))
+      temp_data$dayofYear <- temp_day
+      # Bind the 2nd file onto the existing comp file
+      compiled_data_country1 <- unique(rbind(compiled_data_country1, temp_data))
+      rm(temp_data) # Then remove the temp file to redo process for all files
+    }
+  }
+  # Now let's add the country name to the file
+  compiled_data_country1$country <- name_country1
+  
+  # For loop to compile data for country 2, exact same code as above
+  for (file_name in file_list_country2){
+    if (!exists("compiled_data_country2")){ 
+      compiled_data_country2 <- read.csv(file = paste(path_country2, 
+                                                      "/", file_name, sep = ""), header = TRUE)
+      screen_day <- sub(".csv", "", sub("screen_", "", noquote(file_name)))
+      compiled_data_country2$dayofYear <- screen_day 
+    }else if (exists("compiled_data_country2")){
+      temp_data <- read.csv(file = paste(path_country2, "/", 
+                                         file_name, sep = ""), header = TRUE) 
+      temp_day <- sub(".csv", "", sub("screen_", "", noquote(file_name)))
+      temp_data$dayofYear <- temp_day
+      compiled_data_country2 <- unique(rbind(compiled_data_country2, temp_data))
+      rm(temp_data)
+    }
+  }
+  # Now let's add the country name to the file
+  compiled_data_country2$country <- name_country2
+  
+  # Combine the 2 country's data
+  compiled_data <- rbind(compiled_data_country1, compiled_data_country2)
+  
+  # Remove NA's
+  # To start, convert the compiled_data into a workable data frame.
+  if (any(is.na(compiled_data)) == TRUE){ # Checks compiled_data for NA's in all rows.
+    # If there are NA's, and remove_NA is TRUE/default, then this removes them.
+    if (remove_NA == TRUE){ 
+      compiled_data <- data.frame(compiled_data)
+      compiled_data <- na.omit(compiled_data) # na.omit removes the row w/ NA's.
+      # If remove_NA is FALSE, and silent_NA is FALSE/default, then warning given.
+    } else if (remove_NA == FALSE & silent_NA == FALSE){
+      warning("Warning: row(s) containing NA's present")
+    } # If remove_NA is FALSE and silent_NA is TRUE, then no warning given.
+  }
+  
+  # Write and save it as a .csv in thje current working directory
+  write.csv(compiled_data, file = paste0("./", output_name, ".csv"), 
+            row.names = FALSE)
 }
 
 
 #Third Function
 Compiling_data <- function(){
   #Country Y 
-  setwd("~/Desktop/Biocomputing_RProject-main/Rproject2022/new_countryY/")
-  files_Y <- list.files(path="~/Desktop/Biocomputing_RProject-main/Rproject2022/new_countryY/", pattern="*.csv")
+  setwd(New_directory)
+  files_Y <- list.files(path=New_directory, pattern="*.csv")
   for(i in 1:length(files_Y)){
-   compiled_data_countryY <- read.csv(files_Y[i], header= TRUE)
+    compiled_data_countryY <- read.csv(files_Y[i], header= TRUE)
   }
   Number_Screens_CountryY = nrow(compiled_data_countryY)
   Number_Infected_CountryY = 0
@@ -104,7 +108,7 @@ Compiling_data <- function(){
     #Counts for infected individuals
     if(compiled_data_countryY[i, 3]==1 || compiled_data_countryY[i, 4]==1 || compiled_data_countryY[i, 5]==1 
        || compiled_data_countryY[i, 6]==1 || compiled_data_countryY[i, 7]==1 || compiled_data_countryY[i, 8]==1 ||
-         compiled_data_countryY[i, 9]==1 || compiled_data_countryY[i, 10]==1 || compiled_data_countryY[i, 11]==1 
+       compiled_data_countryY[i, 9]==1 || compiled_data_countryY[i, 10]==1 || compiled_data_countryY[i, 11]==1 
        || compiled_data_countryY[i, 12]==1 ){
       Number_Infected_CountryY = Number_Infected_CountryY + 1
       
@@ -124,8 +128,9 @@ Compiling_data <- function(){
   
   
   #Country X 
-  setwd("~/Desktop/Biocomputing_RProject-main/Rproject2022/countryX/")
-  files_X <- list.files(path="~/Desktop/Biocomputing_RProject-main/Rproject2022/countryX/", pattern="*.csv")
+  Working_directory_CountryX = readline(prompt= "Please type the directory where Country X can be found")
+  setwd(Working_directory_CountryX)
+  files_X <- list.files(path=Working_directory_CountryX, pattern="*.csv")
   for(i in 1:length(files_X)){
     compiled_data_countryX <- read.csv(files_X[i], header= TRUE)
   }
@@ -156,9 +161,9 @@ Compiling_data <- function(){
 }
 
 # Carol Notes: for the third function, I was using the dplyr package because I thought it was a cool tool. I also understood we were supposed to use the 
-	# allData.csv file instead of doing by country x and country Y. So, for number of screens run, female x male count and age distribution I have the
-	# following code:
-		# The age distribution is also grouped by gender following Prof. Stuart suggestion by e-mail. 
+# allData.csv file instead of doing by country x and country Y. So, for number of screens run, female x male count and age distribution I have the
+# following code:
+# The age distribution is also grouped by gender following Prof. Stuart suggestion by e-mail. 
 
 setwd("~/Desktop/Rproject2022")
 read.csv(file='allData.csv')
