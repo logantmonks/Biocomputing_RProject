@@ -92,7 +92,7 @@ compiler <- function(
 }
 
 
-#Third Function
+# Third Function
 summarizer <- function(object){
   compiledData <- object
 	Number_Screens = nrow(compiledData)
@@ -136,24 +136,3 @@ summarizer <- function(object){
   	") patients", sep = "")
   cat("\nPatient age distribution: ", Age_Mean, " ± ", Age_SD, sep = "")
 }
-
-# Carol Notes: for the third function, I was using the dplyr package because I thought it was a cool tool. I also understood we were supposed to use the 
-	# allData.csv file instead of doing by country x and country Y. So, for number of screens run, female x male count and age distribution I have the
-	# following code:
-		# The age distribution is also grouped by gender following Prof. Stuart suggestion by e-mail. 
-
-#setwd("~/Desktop/Rproject2022")
-#read.csv(file='allData.csv')
-#allData <- read.csv(file='allData.csv')
-#library(dplyr)
-
-# Number of screens run
-#allData %>% count
-
-# Male vs. Female patients
-#allData_gender <- group_by(allData, gender)
-#summarize(allData_gender, abundance = n())
-
-# Age distribution of patients 
-#allData_gender_age <- group_by(allData, gender, age)
-#age_distribution_df <- summarize(allData_gender_age, abundance = n())
