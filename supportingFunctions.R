@@ -93,8 +93,8 @@ compiler <- function(
 
 
 #Third Function
-summarizer <- function(file_name){
-  compiledData <- read.csv(file = file_name, header = TRUE)
+summarizer <- function(object){
+  compiledData <- object
 	Number_Screens = nrow(compiledData)
   Number_Infected = 0
   Number_Female = 0
