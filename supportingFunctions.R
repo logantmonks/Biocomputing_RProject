@@ -93,7 +93,7 @@ compiler <- function(
 
 
 #Third Function
-summarize_data <- function(file_name){
+summarizer <- function(file_name){
   compiledData <- read.csv(file = file_name, header = TRUE)
 	Number_Screens = nrow(compiledData)
   Number_Infected = 0
