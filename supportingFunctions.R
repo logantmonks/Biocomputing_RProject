@@ -1,4 +1,8 @@
-#First Function
+# Biocomputing R project -- functions
+# Isabella Gimon, Carol de Souza Moreira, Gretchen Andreasen
+# Dec 14 2022
+
+# First Function
 Converting_txt_to_csv <- function(){
 setwd("~/Desktop/Biocomputing_RProject-main/Rproject2022/countryY/")
 dir.create("~/Desktop/Biocomputing_RProject-main/Rproject2022/new_countryY")
