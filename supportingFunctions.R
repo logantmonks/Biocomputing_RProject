@@ -1,27 +1,35 @@
 # supportingFunctions.R : a script containing serveral functions to manage the data for RProject
-setwd("~/Desktop/Biocomputing/Rnovice/Biocomputing_RProject/")
+setwd("~/Desktop/Biocomputing/Rnovice/TestRProject/")
+#I moved all files from RProject2022 dir into RProject, so the path may need to be edited
+
 # Create a function to convert all Tab and Space delimited .txt files into comma delimited .csv files
-convert_files <- function(directory) {
-  file_list <- list.files(directory, pattern = .txt)
+convert_files <- function(countries) {
+  #First make it so that your function enters the correct dir for the countries
+  for (name in countries){ 
+    dir <- paste("~/Desktop/Biocomputing/Rnovice/TestRProject/country", name, sep = ' ')
+    setpw(dir)
+  }
+  #Then make a for loop to convert each file with a .txt ending to a csv file
+  file_list <- list.files
   for (file in file_list){
     data <- read.table(file, sep = c(" ", "\t"), header = TRUE)
     write.csv(data, file = paste0(file, ".csv"))
   }
+
+
 }
-#go into each directory and convert the files to .csv files
-setwd("~/Desktop/Biocomputing/Rnovice/TestRProject/countryX")
-convert_files("~/Desktop/Biocomputing/Rnovice/TestRProject/countryX")
-setwd("..")
-setwd("~/Desktop/Biocomputing/Rnovice/TestRProject/countryY")
-convert_files("~/Desktop/Biocomputing/Rnovice/TestRProject/countryY")
-setwd("..")
 
 #a function to combine all .csv files in a dir into a single .csv file
-compiled_data <- function(directory, naOption){
+compiled_data <- function(countries, naOption){  
+  #create empty data frame to put all data into
+  compiledfiles <- data.frame(matrix(ncol = 14, nrow = 0))
+  colnames(compiledfiles) = c('gender','age','marker01','marker02','marker03','marker04','marker05','marker06','marker07','marker08','marker09','marker10','country','dayofYear')
+  #make sure in correct dir
+  for (name in countries){ 
+    dir <- paste("~/Desktop/Biocomputing/Rnovice/TestRProject/country", name, sep = ' ')
+    setpw(dir)
   #get all .csv files in the dir
   files <- list.files(directory, pattern = .csv)
-  #create empty data frame to put all data into
-  compiledfiles <- data.frame()
   #create for loop to go through each file in dir
   for (file in files){
     data <- read.csv(file)
@@ -38,11 +46,12 @@ compiled_data <- function(directory, naOption){
     }
     compiledfiles <- rbind(compiledfiles, data)
   }
+
+  }
+  setpw("~/Desktop/Biocomputing/Rnovice/Biocomputing_RProject/")
   write.csv(compiledfiles, file = "compiledfiles.csv")
 }
 
-compiled_data("countyX")
-compiled_data("countyY")
 
 #Still Need to Add country and day columns 
 
@@ -66,6 +75,7 @@ summarize <- function(file){
       notinfected <-  c(notinfected, i)
     }
   }
+#output data
 print(paste("number of infected:", length(infected)))
 print(paste("number of not infected:", length(notinfected)))
 print(paste("number of total number of patients:", sum(length(infected) + length(notinfected))))
@@ -118,6 +128,8 @@ print(uninfected_plot)
 
 return(file)
 }
+
+
 
 
 
