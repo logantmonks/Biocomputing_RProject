@@ -311,7 +311,7 @@ ggarrange(a,b,labels = c("A", "B"),ncol = 2)
 
 ## Answer for Question 2:
 
-# To answer the question regarding the efficiency of a vaccine developed in Country Y
+# To answer the question regarding the effectiveness of a vaccine developed in Country Y
 # to combat the disease in Country X, we took into account some factors and conducted
 # an analysis. The first factor we considered was the age distribution in each country because
 # vaccine effectiveness, testing, and dosage may be different based on age group.
