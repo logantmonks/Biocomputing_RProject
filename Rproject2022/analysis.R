@@ -1,3 +1,7 @@
+# Biocomputing R Project
+# Hanna, Hunter, Nate 
+# December 2022
+
 setwd("~/GitHub/Biocomputing_RProject/Rproject2022/")
 source("~/Github/Biocomputing_RProject/Rproject2022/supportingFunctions.R")
 dirY <- "~/Github/Biocomputing_RProject/RProject2022/countryY"
@@ -12,6 +16,10 @@ output <- screenStats(allData)
 infectionStats <- output[[2]]
 ageDistGraph <- output[[1]]
 allData <- output[[3]]
+
+# Displays hist output from screenStats function, other variables stored as allData
+# and infectionStats
+ageDistGraph
 
 #### QUESTION 1 ####
 infected_individuals <- allData[allData$infected_marker=="Infected",]

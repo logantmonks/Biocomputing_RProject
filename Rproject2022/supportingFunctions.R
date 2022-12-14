@@ -67,7 +67,7 @@ screenStats <- function(allData){
   number_infected = 0 #initialize
   # Proportion of infected patients
   for(i in 1:nrow(allData)){
-    if(allData$any_marker[i] == "Infected"){
+    if(allData$infected_marker[i] == "Infected"){
       number_infected <- number_infected + 1
     }
   }
