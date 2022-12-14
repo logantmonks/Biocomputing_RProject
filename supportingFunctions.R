@@ -142,18 +142,18 @@ summarize_data <- function(file_name){
 	# following code:
 		# The age distribution is also grouped by gender following Prof. Stuart suggestion by e-mail. 
 
-setwd("~/Desktop/Rproject2022")
-read.csv(file='allData.csv')
-allData <- read.csv(file='allData.csv')
-library(dplyr)
+#setwd("~/Desktop/Rproject2022")
+#read.csv(file='allData.csv')
+#allData <- read.csv(file='allData.csv')
+#library(dplyr)
 
 # Number of screens run
-allData %>% count
+#allData %>% count
 
 # Male vs. Female patients
-allData_gender <- group_by(allData, gender)
-summarize(allData_gender, abundance = n())
+#allData_gender <- group_by(allData, gender)
+#summarize(allData_gender, abundance = n())
 
 # Age distribution of patients 
-allData_gender_age <- group_by(allData, gender, age)
-age_distribution_df <- summarize(allData_gender_age, abundance = n())
+#allData_gender_age <- group_by(allData, gender, age)
+#age_distribution_df <- summarize(allData_gender_age, abundance = n())
