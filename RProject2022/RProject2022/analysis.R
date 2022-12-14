@@ -10,7 +10,7 @@ setwd("C:/Users/fabel/Biocomputing_RProject/Rproject2022/Rproject2022")
 
 
 # Load supporting functions:
-source("supportingFunctions (2).R")
+source("supportingFunctions.R")
 
 # Use supporting functions to create and compile the files needed for analysis:
 # The input for the convert.csv in based on your current working directory inside RProject_2022
