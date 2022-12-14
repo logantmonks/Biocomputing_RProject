@@ -13,8 +13,8 @@ setwd("C:/Users/fabel/Biocomputing_RProject/Rproject2022/Rproject2022")
 source("supportingFunctions.R")
 
 # Use supporting functions to create and compile the files needed for analysis:
-# The input for the convert.csv in based on your current working directory inside RProject_2022
-# The input for the merge.all.csv in based on your current working directory inside RProject_2022 and
+# The input for the convert.csv in based on your current working directory inside RProject2022
+# The input for the merge.all.csv in based on your current working directory inside RProject2022 and
 # 1 to ignore NA's, 2 to warn of NA presence, 3 to remove any NA's found
 # The input for summarise.compiled.data is your current working directory where allData.csv is located
 
