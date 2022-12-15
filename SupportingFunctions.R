@@ -11,7 +11,9 @@
 # If left blank, or set to FALSE, will not delete files.
 
 txt2csv <- function(wd = NULL, deltxt = NULL) {
-# Sets given working directory
+  # Stores current directory
+  prevwd <- getwd()
+  # Sets given directory to work in
    if (!is.null(wd)) {
   setwd(wd)
    }
@@ -32,6 +34,7 @@ txt2csv <- function(wd = NULL, deltxt = NULL) {
       }
     else{}
   }
+  setwd(prevwd)
 }
 
 # FUNCTION 2: compiles all .csv in a directory into one file, also adds new columns
@@ -42,7 +45,7 @@ txt2csv <- function(wd = NULL, deltxt = NULL) {
 #   Thus, the following function should be used in both directories of each
 #   country's data. Afterwards, rbind can be used to combine the two resulting
 #   .csv files:
-#       allData.csv <- rbind([filepath]/Country_Y.csv, [filepath]/Country_X.csv)
+#       allData.csv <- rbind(read.csv([filepath]/Country_Y.csv), read.csv([filepath]/Country_X.csv))
 
 # argument countryname should describe what country the data originates from
 #   and is best used with no spaces.
@@ -52,7 +55,9 @@ txt2csv <- function(wd = NULL, deltxt = NULL) {
 #   included in data with a warning message
 
 compile.csv <- function(countryname, omit.NA = NULL, wd = NULL) {
-# Sets given working directory
+  # Stores current directory
+  prevwd <- getwd()
+  # Sets given working directory
   if (!is.null(wd)) {
     setwd(wd)
   }
@@ -83,6 +88,9 @@ compile.csv <- function(countryname, omit.NA = NULL, wd = NULL) {
 # combine new columns to combined data
   alldata <- cbind(tempdata, newcols)
   
+# sets wd back to original  
+ setwd(prevwd)
+ 
 if (isTRUE(omit.NA)) {
   omitdata <- na.omit(alldata)
 # write csv of all data!
