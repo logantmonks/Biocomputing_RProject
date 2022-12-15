@@ -1,3 +1,6 @@
+# Troy McFarland
+# Intro to Biocomputing Final
+# SupportingFunctions.R
 
 # FUNCTION 1: names function "txt2csv" that converts .txt files to .csv 
 
@@ -106,18 +109,31 @@ overview <- function(filename) {
   infected_data <- data.frame(matrix(ncol = 0, nrow = 0))
   healthy_data <- data.frame(matrix(ncol = 0, nrow = 0))
   total_infected <- 0
-  N_marker01 <- 0
-  N_marker02 <- 0
-  N_marker03 <- 0
-  N_marker04 <- 0
-  N_marker05 <- 0
-  N_marker06 <- 0
-  N_marker07 <- 0
-  N_marker08 <- 0
-  N_marker09 <- 0
-  N_marker10 <- 0
+  X_marker01 <- 0
+  X_marker02 <- 0
+  X_marker03 <- 0
+  X_marker04 <- 0
+  X_marker05 <- 0
+  X_marker06 <- 0
+  X_marker07 <- 0
+  X_marker08 <- 0
+  X_marker09 <- 0
+  X_marker10 <- 0
   
-  for (i in 1:nrow(all_data)) {
+  Y_marker01 <- 0
+  Y_marker02 <- 0
+  Y_marker03 <- 0
+  Y_marker04 <- 0
+  Y_marker05 <- 0
+  Y_marker06 <- 0
+  Y_marker07 <- 0
+  Y_marker08 <- 0
+  Y_marker09 <- 0
+  Y_marker10 <- 0
+  
+  # construct dataframes for infected and healthy patients
+  
+for (i in 1:nrow(all_data)) {
     
     if (all_data$marker01[i] > 0 || all_data$marker02[i] > 0 || all_data$marker03[i] > 0 || all_data$marker04[i] > 0 || all_data$marker05[i] > 0 || all_data$marker06[i] > 0 || all_data$marker07[i] > 0 || all_data$marker08[i] > 0|| all_data$marker09[i] > 0|| all_data$marker10[i] > 0) {
       infected_data <- rbind(infected_data, all_data[i,])
@@ -125,38 +141,78 @@ overview <- function(filename) {
     else {
       healthy_data <- rbind(healthy_data, all_data[i,])
     }
-    
+  
+  # find specific marker occurrences for country X
+  
+  if (all_data$country[i] == "X") {
     if (all_data$marker01[i] > 0){
-      N_marker01 <- N_marker01 + 1
+      X_marker01 <- X_marker01 + 1
     }
     if (all_data$marker02[i] > 0){
-      N_marker02 <- N_marker02 + 1
+      X_marker02 <- X_marker02 + 1
     }
     if (all_data$marker03[i] > 0){
-      N_marker03 <- N_marker03 + 1
+      X_marker03 <- X_marker03 + 1
     }
     if (all_data$marker04[i] > 0){
-      N_marker04 <- N_marker04 + 1
+      X_marker04 <- X_marker04 + 1
     }
     if (all_data$marker05[i] > 0){
-      N_marker05 <- N_marker05 + 1
+      X_marker05 <- X_marker05 + 1
     }
     if (all_data$marker06[i] > 0){
-      N_marker06 <- N_marker06 + 1
+      X_marker06 <- X_marker06 + 1
     }
     if (all_data$marker07[i] > 0){
-      N_marker07 <- N_marker07 + 1
+      X_marker07 <- X_marker07 + 1
     }
     if (all_data$marker08[i] > 0){
-      N_marker08 <- N_marker08 + 1
+      X_marker08 <- X_marker08 + 1
     }
     if (all_data$marker09[i] > 0){
-      N_marker09 <- N_marker09 + 1
+      X_marker09 <- X_marker09 + 1
     }
     if (all_data$marker10[i] > 0){
-      N_marker10 <- N_marker10 + 1
+      X_marker10 <- X_marker10 + 1
     }
-    
+  }
+  
+  # find specific marker occurrences for country Y
+  
+  
+  if (all_data$country[i] == "Y") {
+    if (all_data$marker01[i] > 0){
+      Y_marker01 <- Y_marker01 + 1
+    }
+    if (all_data$marker02[i] > 0){
+      Y_marker02 <- Y_marker02 + 1
+    }
+    if (all_data$marker03[i] > 0){
+      Y_marker03 <- Y_marker03 + 1
+    }
+    if (all_data$marker04[i] > 0){
+      Y_marker04 <- Y_marker04 + 1
+    }
+    if (all_data$marker05[i] > 0){
+      Y_marker05 <- Y_marker05 + 1
+    }
+    if (all_data$marker06[i] > 0){
+      Y_marker06 <- Y_marker06 + 1
+    }
+    if (all_data$marker07[i] > 0){
+      Y_marker07 <- Y_marker07 + 1
+    }
+    if (all_data$marker08[i] > 0){
+      Y_marker08 <- Y_marker08 + 1
+    }
+    if (all_data$marker09[i] > 0){
+      Y_marker09 <- Y_marker09 + 1
+    }
+    if (all_data$marker10[i] > 0){
+      Y_marker10 <- Y_marker10 + 1
+    }
+  }
+  
   }
   
   total_infected <- nrow(infected_data)
@@ -167,9 +223,12 @@ overview <- function(filename) {
   percent_males_infected <- N_males_infected / N_males_screened * 100
   
   print(paste0("Total infected: ", total_infected))
-  print(paste0("Total screened:", total_screens))
-  print(paste0("Total infected: ", total_infected))
-  
+  print(paste0("Total screened: ", total_screens))
+  print(paste0("Females infected vs. screened: ", N_females_infected," / ",N_females_screened))
+  print(paste0("or ",percent_females_infected,"%"))
+  print(paste0("Males infected vs. screened: ", N_males_infected," / ",N_males_screened))
+  print(paste0("or ",percent_males_infected,"%"))
+  print("Check your working space for plot outputs.")
   
   # Age distribution histogram
   # extreme outliers in age, such as some individuals living to +400 y.o.a, exist
@@ -187,6 +246,34 @@ overview <- function(filename) {
     geom_histogram(data=healthy_data_trim, binwidth = 1, aes(x=age), alpha = 0.6, fill = "green") +
     scale_color_manual(name = "Status", breaks = c("infected", "healthy"), values = c("infected" = "red", "healthy" = "green")) +
     ggtitle("Infected (red) and healthy (green) patient age distribution")
+ 
+ ggsave("AgeDist.png")
+ 
+ # Plot of markers found by country
+ 
+ X_markers <- data.frame(1:10,c(X_marker01, X_marker02, X_marker03, X_marker04, X_marker05, X_marker06, X_marker07, X_marker08, X_marker09, X_marker10))
+ colnames(X_markers) <- c("marker","count")
+ Y_markers <- data.frame(1:10,c(Y_marker01, Y_marker02, Y_marker03, Y_marker04, Y_marker05, Y_marker06, Y_marker07, Y_marker08, Y_marker09, Y_marker10))
+ colnames(Y_markers) <- c("marker","count")
+ 
+ ggplot() +
+   geom_bar(data = X_markers, aes(x = marker, y = count), stat='identity', fill = "blue", alpha = 0.6) +
+   geom_bar(data = Y_markers, aes(x = marker, y = count), stat='identity', fill = "yellow", alpha = 0.6)+
+   scale_x_continuous(name="marker", breaks=c(1:10))+
+   ggtitle("Incidence of different markers in Country X (blue) and Country Y (yellow)")
+ 
+ ggsave("MarkerIncidence.png")
+ # Plot of disease occurences by country over time
+ 
+ X_infected_data <- infected_data[infected_data$country == "X",]
+ Y_infected_data <- infected_data[infected_data$country == "Y",]
+ 
+ ggplot() +
+   geom_bar(data=X_infected_data, aes(x = dayofYear), fill = "blue", alpha = 0.6)+
+   geom_bar(data=Y_infected_data, aes(x = dayofYear), fill = "yellow", alpha = 0.6)+
+   ggtitle("Incidence of disease per day of year in Country X (blue) and Country Y (yellow)")
+ 
+ ggsave("IncidenceOverDoY.png")
 }
 
 
