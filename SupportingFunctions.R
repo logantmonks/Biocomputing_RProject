@@ -109,11 +109,14 @@ else if (is.null(omit.NA)) {
 
 # FUNCTION 3
 overview <- function(filename) {
+# read in data from compiled file
   all_data <- read.csv(filename)
+# count total number of patients screened
   total_screens <- nrow(all_data)
+# count per gender screened
   N_females_screened <- nrow(all_data[all_data$gender == "female",])
   N_males_screened <- nrow(all_data[all_data$gender == "male",])
-  
+# initialize objects
   infected_data <- data.frame(matrix(ncol = 0, nrow = 0))
   healthy_data <- data.frame(matrix(ncol = 0, nrow = 0))
   total_infected <- 0
@@ -139,7 +142,9 @@ overview <- function(filename) {
   Y_marker09 <- 0
   Y_marker10 <- 0
   
-  # construct dataframes for infected and healthy patients
+  # construct dataframes for infected and healthy patients, checking for an occurrence of "1" (>0)
+  #   in any of the marker columns, one row at a time. If found, combined into
+  #   infected_data, else compiled into healthy_data
   
 for (i in 1:nrow(all_data)) {
     
@@ -150,7 +155,7 @@ for (i in 1:nrow(all_data)) {
       healthy_data <- rbind(healthy_data, all_data[i,])
     }
   
-  # find specific marker occurrences for country X
+  # find specific marker occurrences for country X, increment counter per marker
   
   if (all_data$country[i] == "X") {
     if (all_data$marker01[i] > 0){
@@ -222,14 +227,16 @@ for (i in 1:nrow(all_data)) {
   }
   
   }
-  
+  # find total infected patients
   total_infected <- nrow(infected_data)
+  # divide infected by total screened * 100 for percentage
   percent_infected <- total_infected / total_screens * 100
+  # repeat for gender specific data
   N_females_infected <- nrow(infected_data[infected_data$gender == "female",])
   N_males_infected <- nrow(infected_data[infected_data$gender == "male",])
   percent_females_infected <- N_females_infected / N_females_screened * 100
   percent_males_infected <- N_males_infected / N_males_screened * 100
-  
+  # output to user
   print(paste0("Total infected: ", total_infected))
   print(paste0("Total screened: ", total_screens))
   print(paste0("Females infected vs. screened: ", N_females_infected," / ",N_females_screened))
@@ -246,7 +253,8 @@ for (i in 1:nrow(all_data)) {
   healthy_data_trim <- healthy_data[healthy_data$age < 123,]
   infected_data_trim <- infected_data[infected_data$age < 123,]
   
-  
+  # I unfortunately could not figure out how to build custom legends while using
+  # multiple data frames in a ggplot, so included legend info in the title.
   
   library(ggplot2)
  ggplot() +
@@ -255,10 +263,12 @@ for (i in 1:nrow(all_data)) {
     scale_color_manual(name = "Status", breaks = c("infected", "healthy"), values = c("infected" = "red", "healthy" = "green")) +
     ggtitle("Infected (red) and healthy (green) patient age distribution")
  
+ # save plot to working environment
  ggsave("AgeDist.png")
  
  # Plot of markers found by country
  
+ # build data frames of marker # (integers 1-10): counts per marker
  X_markers <- data.frame(1:10,c(X_marker01, X_marker02, X_marker03, X_marker04, X_marker05, X_marker06, X_marker07, X_marker08, X_marker09, X_marker10))
  colnames(X_markers) <- c("marker","count")
  Y_markers <- data.frame(1:10,c(Y_marker01, Y_marker02, Y_marker03, Y_marker04, Y_marker05, Y_marker06, Y_marker07, Y_marker08, Y_marker09, Y_marker10))
@@ -270,9 +280,13 @@ for (i in 1:nrow(all_data)) {
    scale_x_continuous(name="marker", breaks=c(1:10))+
    ggtitle("Incidence of different markers in Country X (blue) and Country Y (yellow)")
  
+ # save plot to working environment
  ggsave("MarkerIncidence.png")
+ 
+ 
  # Plot of disease occurences by country over time
  
+ # build subset dataframes per country of patient
  X_infected_data <- infected_data[infected_data$country == "X",]
  Y_infected_data <- infected_data[infected_data$country == "Y",]
  
@@ -281,6 +295,7 @@ for (i in 1:nrow(all_data)) {
    geom_bar(data=Y_infected_data, aes(x = dayofYear), fill = "yellow", alpha = 0.6)+
    ggtitle("Incidence of disease per day of year in Country X (blue) and Country Y (yellow)")
  
+ # save plot to working environment
  ggsave("IncidenceOverDoY.png")
 }
 
