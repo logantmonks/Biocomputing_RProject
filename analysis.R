@@ -15,7 +15,7 @@ compile.csv("Y", wd = "~/Documents/gitrepos/Biocomputing_RProject/Rproject2022/c
 compile.csv("X", wd = "~/Documents/gitrepos/Biocomputing_RProject/Rproject2022/countryX")
 # combine resulting files into new .csv "allData2.csv"
 allData2 <- rbind(read.csv("Y.csv"),read.csv("X.csv"))
-write.csv(allData2, file= "allData2.csv")
+write.csv(allData2, file = "allData2.csv")
 
 # generate summary
 overview("allData2.csv")
