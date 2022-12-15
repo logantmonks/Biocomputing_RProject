@@ -6,6 +6,9 @@
 # Note: I have unzipped the Rproject2022.zip and I just set the working directory to the unzipped
 setwd("/Users/hyesooclarejeon/Desktop/Biocomputing_RProject/Rproject2022")
 
+# import libraries
+library(MASS)
+
 ################## Task 1: convert all files ending in txt into comma-separated value files ################
 
 # define the function parseFiles
@@ -60,20 +63,16 @@ compileHelper <- function(countryFiles, combineChoice, combinedFileName, country
   }
 }
 
-# define the function combinCsv
-combineCsv <- function() {
-  # prompt user to choose in which method they would like to combine csv files
-  cat("Enter a number based on your choice of combining csv files ...\n")
-  cat("1: remove rows with NA’s in any columns\n")
-  cat("2: include NAs in the compiled data but be warned of their presence\n")
-  cat("3: include NAs in the compiled data without a warning\n")
-  
-  # save number of choice
-  combineChoice = as.integer(readline())
+# define the function combineCsv
+# the parameter combineChoice is either integers 1, 2, or 3 depending on the choice of compiling data:
+# 1: remove rows with NA’s in any columns
+# 2: include NAs in the compiled data but be warned of their presence
+# 3: include NAs in the compiled data without a warning
+combineCsv <- function(combineChoice) {
   
   # warn user of of NA prsence if choice was 2
   if (combineChoice == 2) {
-    cat("\nWARNING: DATA WITH DATA MODE NA HAS BEEN ADDED TO COMPILED DATA allData_myversion.csv")
+    cat("\nWARNING: DATA WITH DATA MODE NA WILL BE ADDED TO COMPILED DATA allData_myversion.csv ...")
   }
   
   # collect all csv files in countryX directory
@@ -101,9 +100,79 @@ combineCsv <- function() {
   
   # again warn user of of NA prsence if choice was 2
   if (combineChoice == 2) {
+    cat("\nCOMPILATION COMPLETED")
     cat("\nWARNING: DATA WITH DATA MODE NA HAS BEEN ADDED TO COMPILED DATA allData_myversion.csv")
   }
 }
 
+################## Task 3: use compiled dataset to generate summary ################
 
-combineCsv()
+# define function named summarizeData
+summarizeData <- function() {
+  # print header
+  cat("Summary for allData.csv ...\n")
+  
+  # read given allData.csv
+  compiledData <- read.csv("allData.csv", header = TRUE, sep= ",")
+  
+  # save number of rows in compiledData
+  numScreens <- nrow(compiledData)
+  
+  # print numScreens
+  cat("Number of screen tests run: ", numScreens, "\n")
+  
+  # initialize counter for tallying number of infected
+  numInfected = 0
+  
+  # initialize counter for tallying number of infected who are male
+  numInfectedMale = 0
+  
+  # initialize counter for tallying number of infected who are female
+  numInfectedFemale = 0
+  
+  # initialize list for adding age of infected
+  age_infected <- c()
+  
+  for (i in 1:numScreens) {
+    # save data for markers1 - 10 for this patient
+    patient <- compiledData[i, seq(3,12)]
+    # if at least one marker is marked 1, then increment counter
+    if (1 %in% patient) {
+      numInfected <- numInfected + 1
+      gender <- compiledData[i, 1]
+      age <- compiledData[i, 2]
+      if (gender == "male") {
+        # if male, increment counter for male infected
+        numInfectedMale <- numInfectedMale + 1
+      } else {
+        # if male, increment counter for female infected
+        numInfectedFemale <- numInfectedFemale + 1
+      }
+      age_infected <- append(age_infected, age)
+    }
+  }
+  
+  # print number of infected
+  cat("Number of infected: ", numInfected, "\n")
+  # print percentage of infected
+  cat("Percentage of infected: ", round(numInfected * 100 / numScreens, 2), " %\n")
+  
+  # print number of infected male
+  cat("Number of infected (male): ", numInfectedMale, "\n")
+  # print percentage of infected male
+  cat("Percentage of infected (male): ", round(numInfectedMale * 100 / numScreens, 2), " %\n")
+  
+  # print number of infected female
+  cat("Number of infected (female): ", numInfectedFemale, "\n")
+  # print percentage of infected female
+  cat("Percentage of infected (female): ", round(numInfectedFemale * 100 / numScreens, 2), " %\n")
+  
+  # print ratio of male to female number infected
+  cat("Male vs. Female fraction: ")
+  print(fractions(numInfectedMale / numInfectedFemale))
+  
+  # print age distribution
+  cat("Age distribution ...\n")
+  age_dist <- as.data.frame(table(age_infected))
+  print(age_dist, row.names = FALSE)
+}
