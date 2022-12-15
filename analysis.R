@@ -57,7 +57,7 @@ ggplot(new_data, aes(x = dayofYear, y = cum_marker, group = country,
 
 # Question 2 ----
 # If Country Y develops a vaccine for the disease, is it likely to work for
-# the citixens of Country X?
+# the citizens of Country X?
 
 # Let's sum the markers 1-10 based on country and create a new dataframe.
 for (column in new_data[3:12]){ 
@@ -95,5 +95,12 @@ ggplot(new_df, aes(x = marker, y = column, color = country, fill = country)) +
 	xlab("Marker") +
 	scale_x_continuous(breaks = seq(0, 10, 1))
 
-# To answer question 2: ...
+# To answer question 2: I think the vaccine will not work for Country X. Only 
+# because the markers found in Country Y are less prevalent than those found in 
+# country X. So a different vaccine would have to produced in order for citizens 
+# to acquire the proper immunity. It’s comparable to what happens to the Dengue 
+# vaccine. There’s 4 serotypes and it’s a major challenge to make it work for 
+# all 4. With different markers being prevalent in different countries, they’ll 
+# need to develop a vaccine that targets both groups or one vaccine for each 
+# country.
 
