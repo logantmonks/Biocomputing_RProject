@@ -7,7 +7,7 @@ convert_files <- function(countries) {
   #First make it so that your function enters the correct dir for the countries
   for (name in countries){ 
     dir <- paste("~/Desktop/Biocomputing/Rnovice/TestRProject/country", name, sep = ' ')
-    setpw(dir)
+    setwd(dir)
   }
   #Then make a for loop to convert each file with a .txt ending to a csv file
   file_list <- list.files
@@ -27,7 +27,7 @@ compiled_data <- function(countries, naOption){
   #make sure in correct dir
   for (name in countries){ 
     dir <- paste("~/Desktop/Biocomputing/Rnovice/TestRProject/country", name, sep = ' ')
-    setpw(dir)
+    setwd(dir)
   #get all .csv files in the dir
   files <- list.files(directory, pattern = .csv)
   #create for loop to go through each file in dir
@@ -48,7 +48,7 @@ compiled_data <- function(countries, naOption){
   }
 
   }
-  setpw("~/Desktop/Biocomputing/Rnovice/Biocomputing_RProject/")
+  setwd("~/Desktop/Biocomputing/Rnovice/Biocomputing_RProject/")
   write.csv(compiledfiles, file = "compiledfiles.csv")
 }
 
@@ -84,7 +84,7 @@ print(paste("percent postive:", (length(infected)/(length(infected) + length(not
 #males infected
 maleinfected <- integer()
 malenotinfected <- integer()
-data <- read.csv("allData.csv")
+data <- read.csv(file)
 males <- data[data$gender == "male",]
 for (i in 1:nrow(males)) {
   if (any(males[i, 3:12] == 1)) {
@@ -120,11 +120,11 @@ notinfecteddata <- data[notinfected,]
 #make the infected graph first with limits to better view the data
 infected_plot <- ggplot(infecteddata, aes(x=age)) +
   geom_density() + xlim(0,110) + ggtitle("Age Distribution of Infected Patients") + theme_classic()
-print(infected_plot)
+infected_plot
 #make the uninfected graph 
 uninfected_plot <- ggplot(notinfecteddata, aes(x=age)) +
   geom_density() + xlim (0,110) + ggtitle("Age Distribution of Uninfected Patients") + theme_classic()
-print(uninfected_plot)
+uninfected_plot
 
 return(file)
 }
