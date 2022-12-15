@@ -30,11 +30,13 @@ overview("allData2.csv")
 # [1] "Check your working space for plot outputs."
 
 # plots are also generated and saved in the current working directory.
-
-# 1. The disease began in Country X. Plot "IncidenceOverDoY.png" clearly shows that
-# incidences of the disease began in Country X nearly 20 days before incidences were first recorded
-# in Country Y.
 # 
+# # 1. The disease began in Country X. Plot "IncidenceOverDoY.png" clearly shows that
+# # incidences of the disease were first screened in Country X nearly 20 days 
+# before incidences were first recorded in Country Y. Furthermore, screenings began 
+# on the same day in either country, so the earlier occurrences in Country X make it
+# evident that the disease originated there.
+
 # 2. Plot "MarkerIncidence.png" shows that markers 1-5 are overwhelmingly present in Country X
 # incidences, while markers 6-10 are more commonly present in Country Y incidences.
 # Because of this difference, and our knowledge that the presence of absence
