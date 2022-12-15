@@ -2,6 +2,9 @@
 # hjeon
 # analysis.R
 
+# import libraries
+library(ggplot2)
+
 # load functions from supportingFunctions.R
 source("supportingFunctions.R")
 
@@ -33,7 +36,7 @@ screen_date_infectedY <- c()
 # save number of screen tests performed in compiled data
 numScreens <- nrow(compiledData)
 
-# go through all screens to collect date for infected patients
+# go through all screens
 for (i in 1:numScreens) {
   # save data for markers1 - 10 for this patient
   patient <- compiledData[i, seq(3,12)]
@@ -51,6 +54,85 @@ for (i in 1:numScreens) {
   }
 }
 
+# tally up dates at which infected
+screen_date_infected_distX <- as.data.frame(table(screen_date_infectedX))
+screen_date_infected_distY <- as.data.frame(table(screen_date_infectedY))
+print(screen_date_infected_distX[,1, drop=FALSE], row.names = FALSE)
 
+# use ggplot functionalities to produce smooth curves for both dataframes in single plot
+ggplot() +
+  geom_line(data = screen_date_infected_distX, mapping = aes(x = screen_date_infectedX, y = Freq, group = 1), color = "red") +
+  geom_line(data = screen_date_infected_distY, mapping = aes(x = screen_date_infectedY, y = Freq, group = 1), color = "blue") +
+  scale_x_discrete(breaks = function(x){x[c(TRUE, FALSE, FALSE, FALSE, FALSE)]}) +
+  xlab('Screen Test Dates') +
+  ylab('Number Infected') +
+  ggtitle('Question 1: Where did the outbreak begin?') +
+  annotate('text', x=20, y=400, label = 'countryX', col = "red")+
+  annotate('text', x=40, y=100, label = 'countryY', col = "blue")
 
+# answer for Question 1
+"My answer for Question 1 is that it must have begun in Country X. 
+As seen in the ggplot graph of two lines, the first screen tests that were positive
+were recorded in countryX. In addition, the numbers of infected at common dates are much higher
+for country X than for country Y generally, indicating it may have had the outbreak going on for 
+a longer time.
+"
+
+####################################################################################################################################
+########### Question 2: If Country Y develops a vaccine for the disease, is it likely to work for citizens of Country X? ###########
+####################################################################################################################################
+
+# add in any of the 10 markers that were present in patients of each country
+markers_X <- c()
+markers_Y <- c()
+
+# go through all columns that are for markers
+xMarkerData <- compiledData[compiledData$country == "X", seq(3,12)]
+yMarkerData <-compiledData[compiledData$country == "Y", seq(3,12)]
+for (i in 1:10) {
+  # save this marker column for x and y
+  marker_i_x <- xMarkerData[, i]
+  marker_i_y <- yMarkerData[, i]
+  # if x's marker column has 1
+  if (is.element(1, marker_i_x)) {
+    markers_X <- append(markers_X, i)
+  } else {
+    markers_X <- append(markers_X, 0)
+  }
+  # if y's marker column has 1
+  if (is.element(1, marker_i_y)) {
+    markers_Y <- append(markers_Y, i)
+  } else {
+    markers_Y <- append(markers_Y, 0)
+  }
+}
+# create structure for marker 1 to 10
+markers <- paste0("marker ", seq(1,10))
+
+# create structure for [countryX, marker #, and present (marker # or 0)] factor
+country <- "countryX"
+markers_present <- markers_X
+df_X <- cbind(country, markers, markers_present)
+
+# create structure for [countryY, marker #, and present (marker # or 0)] factor
+country <- "countryY"
+markers_present <- markers_Y
+df_Y <- cbind(country, markers, markers_present)
+
+# combine df_X and df_Y into df
+df <- data.frame(rbind(df_X, df_Y))
+
+# # construct very simple tilemap to show presence of any of the 10 markers for country X and Y
+ggplot(df, aes(country, markers, fill = markers_present)) + 
+  geom_tile(colour = "grey50") +
+  ggtitle('Question 2: Would vaccine in Y work for X?')
+
+"My answer for Question 2 is yes vaccine developed in country Y would work for X,
+because as we see in the simple tilemap, we see all markers present in X also in Y
+infected patients. If the colors are different side by side for a marker, then
+that means it is not a common marker between X and Y. However, we do see same colors
+side by side for all markers in this graph. Given that the vaccine is developed based
+on the country Y's markers 1 through 10 presence factor, yes the vaccine would also
+work for those in X who have the same set of markers.
+"
 
