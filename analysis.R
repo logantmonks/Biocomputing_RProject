@@ -3,7 +3,7 @@
 # Dec 14 2022
 
 # Begin by setting working directory ----
-setwd("~/Documents")
+setwd("~/Documents/Courses/Biocomputing_BIOS_60318/Tutorials/Biocomputing_RProject")
 
 # Source the code containing the necessary countries
 source("supportingFunctions.R")
@@ -12,19 +12,19 @@ source("supportingFunctions.R")
 # Function 3: summarizer
 
 # Convert any .txt files in the country folders to .csv files
-# DO THIS ONCE THE FIRST FUNCTION IS FIXED
+Converting_txt_to_csv() # Works!
 
 # Compile the country data into one file, "compiledData.csv", with udf compiler
-compiler(path_country1 = "countryX", 
+compiler(path_country1 = "Rproject2022/countryX", 
 	name_country1 = "X", 
-	path_country2 = "countryY", 
+	path_country2 = "Rproject2022/fixed_countryY", 
 	name_country2 = "Y")
 
-# Load the compiled data into R
-compiledData <- read.csv(file = "compiledData.csv", header = TRUE)
+# Summarize the compiled data using udf summarizer
+summarizer(path_to_data = "compiledData.csv")
 
-# Summarize it with udf summarizer
-summarizer(compiledData)
+# Load the compiled data into R for analysis
+compiledData <- read.csv(file = "compiledData.csv", header = TRUE)
 
 # Question 1 ----
 # In which country (X or Y) did the disease outbreak likely begin?
@@ -60,9 +60,9 @@ ggplot(new_data, aes(x = dayofYear, y = cum_marker, group = country,
 # the citixens of Country X?
 
 # Let's sum the markers 1-10 based on country and create a new dataframe.
-for (column in new_data[3:12]){ # We have to use the full column from the data,
-	# otherwise aggregate will be unhappy because it will only read a variable 
-	# and not a full column.
+for (column in new_data[3:12]){ 
+	# We have to use the full column from the data, otherwise aggregate will be 
+	# unhappy because it will only read a variable and not a full column.
 	if(!exists("new_df")){ # This is just to reiterate onto a dataframe
 		new_df <- aggregate(column ~ country, new_data, sum) # Summing column by country
 	} else if (exists("new_df")){ # Appending onto previously created df
@@ -75,12 +75,25 @@ for (column in new_data[3:12]){ # We have to use the full column from the data,
 # Great! That worked. But we're missing marker numbers for the data. 
 # Let's add that posthumously, because we're working with columns in the 
 # for loop.
-for (row in nrow(new_df)){
-	for (number in 1:10){
-		new_df$marker <- number
+count <- -1 # Create a count to add to for "double row numbers".
+number <- 1 # Create number for first marker, starting at 1.
+# Iterate over the rows to add a number and signify the marker.
+for (row in 1:nrow(new_df)){
+	count <- count + 1
+	if (count >= 2){ # This will take care of the second row problem
+		count <- 0
+		number <- number + 1
 	}
+	new_df$marker[row] <- number
 }
 
-new_df
+# Yay! Now we get to plot the data.
+ggplot(new_df, aes(x = marker, y = column, color = country, fill = country)) +
+	geom_bar(position = "dodge", stat = "identity") +
+	theme_minimal() +
+	ylab("Cumulative markers in population") +
+	xlab("Marker") +
+	scale_x_continuous(breaks = seq(0, 10, 1))
 
+# To answer question 2: ...
 

@@ -4,7 +4,7 @@
 
 # First Function
 Converting_txt_to_csv <- function(){
-  Working_directory = readline(prompt = "Type the path to directory with files: ")
+  Working_directory = readline(prompt = "Type the path to the directory with files: ")
   print(Working_directory)
   setwd(Working_directory)
   New_directory = readline(prompt= "Type the path to a new directory for converted files: ")
@@ -37,7 +37,7 @@ compiler <- function(
 			# And add the day from the file name, formatted "screen_xxx.csv"
 			# Begin by creating a substring with just the day
 			screen_day <- sub(".csv", "", sub("screen_", "", noquote(file_name)))
-			compiled_data_country1$dayofYear <- screen_day # Create column w/ day
+			compiled_data_country1$dayofYear <- screen_day
 		# If the comp file does exist, then add to it by reading and binding the
 		# second .csv, in the "else if" statement below.
 		}else if (exists("compiled_data_country1")){
@@ -99,9 +99,8 @@ compiler <- function(
 # This is not quite compatible yet, I'm working on it!
 
 # Third Function
-summarizer <- function(){
-  object = readline(prompt = "Please type the path for your file: ")
-	compiledData <- object
+summarizer <- function(path_to_data){
+  compiledData <- read.csv(file = path_to_data, header = TRUE)
 	Number_Screens = nrow(compiledData)
   Number_Infected = 0
   Number_Female = 0
@@ -143,4 +142,3 @@ summarizer <- function(){
   	") patients", sep = "")
   cat("\nPatient age distribution: ", Age_Mean, " ± ", Age_SD, sep = "")
 }
-summarizer()
